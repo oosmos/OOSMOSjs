@@ -138,9 +138,7 @@ var OOSMOS = function() {
         }
 
         function InstrumentRegion(Region) {
-          var StateName;
-
-          for (StateName in Region) {
+          for (var StateName in Region) {
             if (StateName === 'DEFAULT') {
               continue;
             }
