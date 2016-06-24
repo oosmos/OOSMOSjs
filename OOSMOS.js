@@ -235,7 +235,7 @@ var OOSMOS = function() {
           if (m_TimeoutInterval === undefined) {
             var that = this;
 
-            m_TimeoutInterval = setInterval(function () {
+            var IntervalTick = function() {
               if (m_TimeoutSeconds === undefined) {
                 return;
               }
@@ -251,7 +251,9 @@ var OOSMOS = function() {
                   m_TimeoutState.TIMEOUT.call(that);
                 }
               }
-            }, 1000);
+            };
+
+            m_TimeoutInterval = setInterval(IntervalTick, 1000);
           }
         },
 
@@ -510,7 +512,7 @@ var OOSMOS = function() {
           if (m_Interval === undefined) {
             var that = this;
 
-            m_Interval = setInterval(function () {
+            var IntervalTick = function () {
               for (var StateDotPath in m_Timeouts) {
                 m_Timeouts[StateDotPath] -= 1;
 
@@ -525,7 +527,9 @@ var OOSMOS = function() {
                   }
                 }
               }
-            }, 1000);
+            };
+
+            m_Interval = setInterval(IntervalTick, 1000);
           }
 
           this.DebugPrint('SetTimeoutSeconds:'+m_State.DOTPATH+' '+TimeoutSeconds);
