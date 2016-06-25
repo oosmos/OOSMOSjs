@@ -1,6 +1,6 @@
 var OOSMOS = require('../OOSMOS.js');
 
-var oFsmTimeoutTest = OOSMOS.FSM({ DEFAULT: 'A',
+var oFsmTimeoutTest = OOSMOS({ DEFAULT: 'A',
   A: {
     ENTER: function() {
       this.Print("In state A");

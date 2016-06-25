@@ -1,6 +1,6 @@
 var OOSMOS = require('../OOSMOS.js') ;
 
-var oHsmTimeoutTest = OOSMOS.HSM({ DEFAULT: 'Outer',
+var oHsmTimeoutTest = OOSMOS({ DEFAULT: 'Outer',
   Outer: {
     ENTER: function() {
       this.Print('In state Outer');
