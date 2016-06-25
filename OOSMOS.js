@@ -25,6 +25,14 @@
 var OOSMOS = function() {
   'use strict';
 
+function extend(){
+    for(var i=1; i<arguments.length; i++)
+        for(var key in arguments[i])
+            if(arguments[i].hasOwnProperty(key))
+                arguments[0][key] = arguments[i][key];
+    return arguments[0];
+}
+
   var Base = function() {
     var m_DebugMode = false;
     var m_InBrowser = typeof(window) !== 'undefined';
@@ -127,7 +135,20 @@ var OOSMOS = function() {
       //   state (not dot-qualified).
       //
       (function InstrumentStateMachine() {
-        function InstrumentState(State) {
+        function InstrumentState(Region, StateName) {
+          if (StateName === 'DEFAULT') {
+            return;
+          }
+
+          //
+          // Execute optional state closure function.
+          //
+          if (typeof(Region[StateName]) === 'function') {
+            Region[StateName] = Region[StateName]();
+          }
+
+          var State = Region[StateName];
+
           if (State.ENTER && typeof(State.ENTER) !== 'function') {
             m_Base.Alert('ENTER must be a function.');
           }
@@ -135,44 +156,33 @@ var OOSMOS = function() {
           if (State.EXIT && typeof(State.EXIT) !== 'function') {
             m_Base.Alert('EXIT must be a function.');
           }
+
+          Region[StateName].NAME = StateName;
         }
 
-        function InstrumentRegion(Region) {
-          for (var StateName in Region) {
-            if (StateName === 'DEFAULT') {
-              continue;
-            }
-
-            Region[StateName].NAME = StateName;
-
-            if (typeof(Region[StateName]) === 'function') {
-              Region[StateName] = Region[StateName]();
-            }
-
-            InstrumentState(Region[StateName]);
-          }
-
-          //
-          // If there is only one state in the region, set the
-          // DEFAULT so the user doesn't have to.
-          //
-          if (Object.keys(Region).length === 1) {
-            for (StateName in Region) {
-              Region.DEFAULT = StateName;
-            }
-          }
-          else {
-            if (!Region.DEFAULT) {
-              m_Base.Alert('You must specify a DEFAULT if there are more than one state in the region.');
-            }
-          }
-        }
-
+        //
+        // Execute optional region closure function.
+        //
         if (typeof(Region) === 'function') {
-          Region = new Region();
+          Region = Region();
         }
 
-        InstrumentRegion(Region);
+        for (var StateName in Region) {
+          InstrumentState(Region, StateName);
+        }
+
+        //
+        // If there is only one state in the region, set the
+        // DEFAULT so the user doesn't have to.
+        //
+        if (Object.keys(Region).length === 1) {
+          Region.DEFAULT = StateName;
+        }
+        else {
+          if (!Region.DEFAULT) {
+            m_Base.Alert('You must specify a DEFAULT if there are more than one state in the region.');
+          }
+        }
       }());
 
       return {
@@ -316,9 +326,7 @@ var OOSMOS = function() {
           // DEFAULT so the user doesn't have to.
           //
           if (Object.keys(Region).length === 1) {
-            for (StateName in Region) {
-              Region.DEFAULT = StateName;
-            }
+            Region.DEFAULT = StateName;
           }
           else {
             if (!Region.DEFAULT) {
