@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.2">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>20</x>
+      <y>20</y>
+      <w>110</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>Idle
+--
+
+valign=top
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>20</x>
+      <y>110</y>
+      <w>370</w>
+      <h>190</h>
+    </coordinates>
+    <panel_attributes>Active
+--
+
+valign=top
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>30</x>
+      <y>140</y>
+      <w>130</w>
+      <h>150</h>
+    </coordinates>
+    <panel_attributes>A
+--
+
+valign=top
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>240</x>
+      <y>140</y>
+      <w>140</w>
+      <h>150</h>
+    </coordinates>
+    <panel_attributes>B
+--
+
+valign=top
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>40</x>
+      <y>170</y>
+      <w>90</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>AA
+--
+
+valign=top
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLState</id>
+    <coordinates>
+      <x>270</x>
+      <y>170</y>
+      <w>90</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>BB
+--
+
+valign=top
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>30</x>
+      <y>50</y>
+      <w>60</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>eStart
+lt=-&gt;</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;60.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>100</x>
+      <y>50</y>
+      <w>60</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>eStop
+lt=-&gt;</panel_attributes>
+    <additional_attributes>10.0;60.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>380</x>
+      <y>140</y>
+      <w>110</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>eRestart
+lt=-&gt;</panel_attributes>
+    <additional_attributes>10.0;60.0;40.0;60.0;40.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>150</x>
+      <y>150</y>
+      <w>110</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>eA2B
+lt=-&gt;</panel_attributes>
+    <additional_attributes>10.0;20.0;90.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>150</x>
+      <y>180</y>
+      <w>140</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>eA2B
+lt=-&gt;</panel_attributes>
+    <additional_attributes>10.0;20.0;120.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>120</x>
+      <y>210</y>
+      <w>140</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>eAA2B
+lt=-&gt;</panel_attributes>
+    <additional_attributes>10.0;20.0;120.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>120</x>
+      <y>240</y>
+      <w>170</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>eAA2BB
+lt=-&gt;</panel_attributes>
+    <additional_attributes>10.0;20.0;150.0;20.0</additional_attributes>
+  </element>
+</diagram>
