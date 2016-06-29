@@ -183,7 +183,7 @@ TimeoutDemo.Start();
 
 ### Inheritance
 
-You can add your own interface to an `OOSMOS` state machine like this using the `OOSMOS` `Extend()` API.
+You can add your own interface to an `OOSMOS` state machine using the `OOSMOS` `Extend()` API, like this.
 
 ```javascript
 var MyExtendedStateMachine = (function() {
@@ -264,3 +264,7 @@ Further, we can use state-local variables to cache the `jQuery` selectors, like 
   .
   .
 ```
+
+## Tests
+
+There are both `Node.js` (`.js`) and browser (`.html`) files in the tests directory.
