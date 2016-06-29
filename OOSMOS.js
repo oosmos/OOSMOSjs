@@ -44,9 +44,7 @@ var OOSMOS = function(Region) {
     var StateStack = [];
 
     function InstrumentRegion(Region) {
-      var StateName;
-
-      for (StateName in Region) {
+      for (var StateName in Region) {
         if (StateName === 'DEFAULT') {
           continue;
         }
@@ -87,7 +85,7 @@ var OOSMOS = function(Region) {
 
       StateStack.push(StateName);
         State.DOTPATH = StateStack.join('.');
-        m_DotPath2State[StateStack.join('.')] = State;
+        m_DotPath2State[State.DOTPATH] = State;
 
         if (State.REGION) {
           InstrumentRegion(State.REGION);
@@ -281,6 +279,16 @@ var OOSMOS = function(Region) {
       this.DebugPrint('SetTimeoutSeconds:'+m_State.DOTPATH+' '+TimeoutSeconds);
     },
 
+    Extend: function(From) {
+      var To = this;
+
+      Object.keys(From).forEach(function(key) {
+        To[key] = From[key];
+      });
+
+      return To;
+    },
+
     DebugPrint: function(String) {
       if (m_DebugMode) {
         this.Print(String);
@@ -288,11 +296,21 @@ var OOSMOS = function(Region) {
     },
 
     SetDebug: function(DebugMode, DebugID, MaxLinesOut) {
-      m_DebugMode = DebugMode || false;
+      if (typeof(DebugMode) !== 'boolean') {
+        this.Alert('First argument of SetDebug must be a boolean value. Defaulting to false.');
+        DebugMode = false;
+      }
+
+      m_DebugMode = DebugMode;
 
       if (m_InBrowser) {
+        if (DebugID === undefined) {
+          this.Alert('DebugID must be set to the ID of a <div> element.');
+          return;
+        }
+
         m_DebugID = DebugID;
-        m_MaxLinesOut = MaxLinesOut || 1000;
+        m_MaxLinesOut = MaxLinesOut || 200;
       }
     },
 
@@ -339,8 +357,8 @@ var OOSMOS = function(Region) {
       else {
         console.log(Message);
       }
-    },
-  }
+    }
+  };
 };
 
 if (typeof(window) === 'undefined') {

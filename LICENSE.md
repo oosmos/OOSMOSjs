@@ -1,8 +1,8 @@
 `OOSMOS.js` is licensed under the MIT License.
 
-> **The MIT License (MIT)**
+> **The MIT License**
 >
-> Copyright (c) 2016 Mark J Glenn and OOSMOS, LLC
+> Copyright (c) 2016 Mark J Glenn
 >
 > Permission is hereby granted, free of charge, to any person obtaining
 > a copy of this software and associated documentation files (the

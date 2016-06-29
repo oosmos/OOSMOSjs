@@ -1,6 +1,6 @@
 var OOSMOS = require('../OOSMOS.js');
 
-var oFsmTimeoutTest = OOSMOS({ DEFAULT: 'A',
+var TimeoutTest = OOSMOS({ DEFAULT: 'A',
   A: function() {
     var Count = 0;
 
@@ -27,5 +27,5 @@ var oFsmTimeoutTest = OOSMOS({ DEFAULT: 'A',
   }
 });
 
-oFsmTimeoutTest.SetDebug(true);
-oFsmTimeoutTest.Start();
+TimeoutTest.SetDebug(true);
+TimeoutTest.Start();

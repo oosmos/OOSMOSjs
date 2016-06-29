@@ -107,7 +107,7 @@ a {
 <script type="text/javascript">
 'use strict';
 
-var oHsmDemo = OOSMOS({ DEFAULT: 'Idle',
+var Demo = OOSMOS({ DEFAULT: 'Idle',
   Idle: {
     ENTER: function() {
       $('#Idle').show();
@@ -147,46 +147,51 @@ var oHsmDemo = OOSMOS({ DEFAULT: 'Idle',
     eStop:    function() { this.Transition('Idle');   },
 
     REGION: { DEFAULT: 'A',
-      A: {
-        ENTER: function() {
-          $('#A').show();
+      A: function() {
+        var $A = $('#A');
+        var $AA = $('#AA');
 
-          var that = this;
-          $('#eA2B').click(function()  { that.Event('eA2B');  });
-          $('#eA2BB').click(function() { that.Event('eA2BB'); });
-        },
+        return {
+          ENTER: function() {
+            $A.show();
+  
+            var that = this;
+            $('#eA2B').click(function()  { that.Event('eA2B');  });
+            $('#eA2BB').click(function() { that.Event('eA2BB'); });
+          },
+  
+          EXIT: function() {
+            $('#eA2B').unbind('click');
+            $('#eA2BB').unbind('click');
+  
+            $A.hide();
+          },
 
-        EXIT: function() {
-          $('#eA2B').unbind('click');
-          $('#eA2BB').unbind('click');
+          eA2B:  function() { this.Transition('Active.B');         },
+          eA2BB: function() { this.Transition('Active.B.BB');      },
 
-          $('#A').hide();
-        },
-
-        eA2B:  function() { this.Transition('Active.B');         },
-        eA2BB: function() { this.Transition('Active.B.BB');      },
-
-        REGION: {
-          AA: {
-            ENTER: function() {
-              $('#AA').show();
-
-              var that = this;
-              $('#eAA2B').click(function()  { that.Event('eAA2B');  });
-              $('#eAA2BB').click(function() { that.Event('eAA2BB'); });
-            },
-    
-            EXIT: function() {
-              $('#eAA2B').unbind('click');
-              $('#eAA2BB').unbind('click');
-
-              $('#AA').hide();
-            },
-
-            eAA2B:  function() { this.Transition('Active.B');    },
-            eAA2BB: function() { this.Transition('Active.B.BB'); }
+          REGION: {
+            AA: {
+              ENTER: function() {
+                $AA.show();
+  
+                var that = this;
+                $('#eAA2B').click(function()  { that.Event('eAA2B');  });
+                $('#eAA2BB').click(function() { that.Event('eAA2BB'); });
+              },
+      
+              EXIT: function() {
+                $('#eAA2B').unbind('click');
+                $('#eAA2BB').unbind('click');
+  
+                $AA.hide();
+              },
+  
+              eAA2B:  function() { this.Transition('Active.B');    },
+              eAA2BB: function() { this.Transition('Active.B.BB'); }
+            }
           }
-        }
+        };
       },
 
       B: function() {
@@ -219,31 +224,31 @@ var oHsmDemo = OOSMOS({ DEFAULT: 'Idle',
   }
 });
 
-oHsmDemo.SetDebug(true, 'debugTest');
-oHsmDemo.Start();
+Demo.SetDebug(true, 'debugTest');
+Demo.Start();
 
-oHsmDemo.Assert(oHsmDemo.IsIn('Idle'));
-oHsmDemo.Event('eStart');
-oHsmDemo.Assert(oHsmDemo.IsIn('Active'));
-oHsmDemo.Assert(oHsmDemo.IsIn('Active.A'));
-oHsmDemo.Assert(oHsmDemo.IsIn('Active.A.AA'));
-oHsmDemo.Event('eRestart');
-oHsmDemo.Assert(oHsmDemo.IsIn('Active.A.AA'));
-oHsmDemo.Event('eStop');
-oHsmDemo.Assert(oHsmDemo.IsIn('Idle'));
-oHsmDemo.Event('eStart');
-oHsmDemo.Event('eA2B');
-oHsmDemo.Assert(oHsmDemo.IsIn('Active.B.BB'));
-oHsmDemo.Event('eRestart');
-oHsmDemo.Event('eA2BB');
-oHsmDemo.Assert(oHsmDemo.IsIn('Active.B.BB'));
-oHsmDemo.Event('eRestart');
-oHsmDemo.Event('eAA2B');
-oHsmDemo.Assert(oHsmDemo.IsIn('Active.B.BB'));
-oHsmDemo.Event('eRestart');
-oHsmDemo.Event('eAA2BB');
-oHsmDemo.Assert(oHsmDemo.IsIn('Active.B.BB'));
-oHsmDemo.Event('eStop');
+Demo.Assert(Demo.IsIn('Idle'));
+Demo.Event('eStart');
+Demo.Assert(Demo.IsIn('Active'));
+Demo.Assert(Demo.IsIn('Active.A'));
+Demo.Assert(Demo.IsIn('Active.A.AA'));
+Demo.Event('eRestart');
+Demo.Assert(Demo.IsIn('Active.A.AA'));
+Demo.Event('eStop');
+Demo.Assert(Demo.IsIn('Idle'));
+Demo.Event('eStart');
+Demo.Event('eA2B');
+Demo.Assert(Demo.IsIn('Active.B.BB'));
+Demo.Event('eRestart');
+Demo.Event('eA2BB');
+Demo.Assert(Demo.IsIn('Active.B.BB'));
+Demo.Event('eRestart');
+Demo.Event('eAA2B');
+Demo.Assert(Demo.IsIn('Active.B.BB'));
+Demo.Event('eRestart');
+Demo.Event('eAA2BB');
+Demo.Assert(Demo.IsIn('Active.B.BB'));
+Demo.Event('eStop');
 
 </script>
 </body>

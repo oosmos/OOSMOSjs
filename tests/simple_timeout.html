@@ -55,7 +55,7 @@
 <div id="debugFSM" class="Debug"></div>
 <script type="text/javascript">
 
-var oFsmTimeoutTest = OOSMOS({ DEFAULT: 'A',
+var TimeoutTest = OOSMOS({ DEFAULT: 'A',
   A: function() {
       var Count = 0;
 
@@ -82,8 +82,9 @@ var oFsmTimeoutTest = OOSMOS({ DEFAULT: 'A',
   }
 });
 
-oFsmTimeoutTest.SetDebug(true, 'debugFSM');
-oFsmTimeoutTest.Start();
+TimeoutTest.SetDebug(true, 'debugFSM');
+TimeoutTest.Start();
+
 </script>
 </body>
 </html>
