@@ -1,61 +1,59 @@
 <!---
-## [OOSMOS.js](https://oosmos.com/OOSMOS_js) —  Hierarchical State Machine.
+## [OOSMOS.js](https://oosmos.com/OOSMOS_js) -- Hierarchical State Machine for JavaScript.
 -->
 
-## `OOSMOS.js` —  A Hierarchical State Machine.
+## `OOSMOS.js` --  A Hierarchical State Machine Framework for JavaScript.
 
 ### Features
 
 - Very readable encapsulated state machine structure.
+- Simple, less than 400 lines of code.
 - Same code runs in a browser or `Node.js`.
 - Supports arbitrarily deep hierarchical state machines.
-- Simple, less than 400 lines of code.
 - Supports state local variables. (Ideal for caching `jQuery` elements.)
 - Simple API: Only 5 principle APIs.
 - Can run multiple state machines concurrently.
 - Can inherit any `OOSMOS` state machine without using the JavaScript prototype mechanism.  (See the **Inheritance** example below.)
-- Event can pass arguments.
+- Events can pass arguments into the state entry function via transitions.
 
-*Note: OOSMOS stands for **O**bject **O**riented **S**tate **M**achine **O**perating **S**ystem.  OOSMOS is a small footprint C/C++ state machine operating system for the industrial IOT space.  (see [www.oosmos.com](http://www.oosmos.com).) This JavaScript implementation borrows from the Object-Oriented and 
+*Note: OOSMOS stands for **O**bject **O**riented **S**tate **M**achine **O**perating **S**ystem.  OOSMOS is a small footprint C/C++ state machine operating system for the industrial IOT space.  (See [www.oosmos.com](http://www.oosmos.com).) This JavaScript implementation borrows from the Object-Oriented and 
 State Machine elements of OOSMOS but not the Operating System elements.*
 
 ### Example
 
 We'll use `OOSMOS.js` to implement a simple state machine that toggles between states `A` and `B` with timeouts as represented in this state chart.
 
-![](http://localhost/oosmos.com/pages/OOSMOS_js/images/fsm_timeout.svg)
+![](http://localhost/OOSMOS.js/tests/simple_timeout.svg)
 
-The entire implementation is below.  Line 1 is only required if you are running under `Node.js`.  In lines 3 through 22, we create a state machine called `TimeoutDemo`.  State `A` starts on line 4 and state `B` starts on line 13 and look very similar.  State `A` implements an `ENTER` event that establishes a timeout for `4` seconds.  When the timeout expires, the `TIMEOUT` function will be executed which transitions to state `B`.  State `B` essentially does the same thing as state `A` except that it times out in `1` second.
+The entire implementation is below.  In lines 1 through 20, we create a state machine called `TimeoutDemo`.  State `A` starts on line 2 and state `B` starts on line 11 and look very similar.  State `A` implements an `ENTER` event that establishes a timeout of `4` seconds.  When the timeout expires, the `TIMEOUT` function will be executed which transitions to state `B`.  State `B` essentially does the same thing as state `A` except that it times out in `1` second.
 
-Line 24 starts the state machine.
+Line 22 starts the state machine.
 
-On lines 6 and 15 we use the `OOSMOS` `Print()` API to display progress.
+In lines 4 and 13 we use the `OOSMOS` `Print()` API to display progress.
 
 ```javascript
- 1  var OOSMOS = require('../OOSMOS.js');  
- 2
- 3  var TimeoutDemo = OOSMOS({ DEFAULT: 'A',
- 4    A: {
- 5      ENTER: function() {
- 6        this.Print("In state A");
- 7        this.SetTimeoutSeconds(4);
- 8      },
- 9      TIMEOUT: function() {
-10        this.Transition('B');
-11      } 
-12    },
-13    B: {
-14      ENTER: function() {
-15        this.Print("In state B");
-16        this.SetTimeoutSeconds(1);
-17      },
-18      TIMEOUT: function() {
-19        this.Transition('A');
-20      }
-21    }  
-22 });
-23
-24 TimeoutDemo.Start();
+ 1  var TimeoutDemo = OOSMOS({ DEFAULT: 'A',
+ 2    A: {
+ 3      ENTER: function() {
+ 4        this.Print("In state A");
+ 5        this.SetTimeoutSeconds(4);
+ 6      },
+ 7      TIMEOUT: function() {
+ 8        this.Transition('B');
+ 9      } 
+10    },
+11    B: {
+12      ENTER: function() {
+13        this.Print("In state B");
+14        this.SetTimeoutSeconds(1);
+15      },
+16      TIMEOUT: function() {
+17        this.Transition('A');
+18      }
+19    }  
+20 });
+21
+22 TimeoutDemo.Start();
 ```
 
 ### State Machine Structure Overview
@@ -127,7 +125,7 @@ StateMachine.Start();
 |`SetDebug(DebugMode [, DebugID [, MaxLines]])`|Pass a `DebugMode` of `true` to enable debug mode, `false` otherwise.<br><br>When running under a browser, you must specify the  `HTML` `DebugID` of a `<div>` element into which debug lines will be written.<br><br>`MaxLines` specifies the maximum number of lines that are retained in the `<div>`.<br><br>*Note that most browsers slow down considerably due to inefficient scrolling if there are too many lines retained in the `<div>`.  Defaults to 200.*   |
 
 
-### Reserved Event Names
+### Reserved Names in a State Object
 
 |Reserved Event Name|Description|
 |---|---|
@@ -135,13 +133,14 @@ StateMachine.Start();
 |`EXIT`|The `EXIT` function is called as the state is exited.|
 |`TIMEOUT`|This event is triggered if a timeout that was established in the `ENTER` function occurred.|
 |`REGION`|Specified by you to indicate nested states (hierarchy).|
+|`DOTPATH`|Used internally by `OOSMOS`.|
 
-### Reserved State Names
+### Reserved Names in a Region Object
 
 |Reserved State Name|Description|
 |---|---|
 |`DEFAULT`|Specified by you inside of a `REGION` to indicate which of multiple states at the same level should be entered by default.<br><br>Not required if there is only one state in the region.|
-|`NAME`|Used internally by `OOSMOS`.|
+
 
 ### State Local Variables
 
@@ -149,8 +148,6 @@ Each state must (eventually) specify an object of events.  See state `A`, below.
 
 
 ```javascript
-var OOSMOS = require('../OOSMOS.js');  // Only if you're running Node.js
-
 var TimeoutDemo = OOSMOS({ DEFAULT: 'A',
   A: {
     ENTER: function() {
@@ -267,4 +264,4 @@ Further, we can use state-local variables to cache the `jQuery` selectors, like 
 
 ## Tests
 
-There are both `Node.js` (`.js`) and browser (`.html`) files in the tests directory.
+There are both `Node.js` (`.js`) and browser (`.html`) examples in the `tests` directory.
