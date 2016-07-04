@@ -23,7 +23,7 @@ State Machine elements of OOSMOS but not the Operating System elements.*
 
 We'll use `OOSMOS.js` to implement a simple state machine that toggles between states `A` and `B` with timeouts as represented in this state chart.
 
-![](http://localhost/OOSMOS.js/tests/simple_timeout.svg)
+![](http://www.oosmos.com/github/README.md/simple_timeout.svg)
 
 The entire implementation is below.  In lines 1 through 20, we create a state machine called `TimeoutDemo`.  State `A` starts on line 2 and state `B` starts on line 11 and look very similar.  State `A` implements an `ENTER` event that establishes a timeout of `4` seconds.  When the timeout expires, the `TIMEOUT` function will be executed which transitions to state `B`.  State `B` essentially does the same thing as state `A` except that it times out in `1` second.
 
@@ -225,7 +225,7 @@ Also note that, but cause the `jQuery` event is executed under a different `this
       $('#eRestart').unbind('click');
 
       $('#Active').hide();
-    },
+    }
   },
   .
   .
@@ -237,8 +237,8 @@ Further, we can use state-local variables to cache the `jQuery` selectors, like 
   .
   .
   Active: function() {
-    var $Active = $('#Active');
-    var $eStop  = $('#eStop');
+    var $Active   = $('#Active');
+    var $eStop    = $('#eStop');
     var $eRestart = $('#eRestart');
 
     return {
@@ -264,4 +264,4 @@ Further, we can use state-local variables to cache the `jQuery` selectors, like 
 
 ## Tests
 
-There are both `Node.js` (`.js`) and browser (`.html`) examples in the `tests` directory.
+There are both `Node.js` (`.js`) and browser (`.html`) tests in the `tests` directory.
