@@ -34,39 +34,38 @@
 <script src="../OOSMOS.js" type="text/javascript"></script>
 
 <style>
-.Debug {
-  float:left;
+    .Debug {
+      float:left;
 
-  width:250px;
-  overflow-x:auto;
+      width:250px;
+      overflow-x:auto;
 
-  height:500px;
-  overflow-y:auto;
+      height:500px;
+      overflow-y:auto;
+      border:1px solid blue;
 
-  white-space:pre;
-  font-family:monospace;
-  font-size:10px;
-  border:1px solid blue;
-  margin:0 5px;
-}
-.State {
-  border:1px solid blue;
-  padding:5px;
-  max-width:200px;
-  font-size:12px;
-  font-weight:bold;
-}
-a {
-  display:block;
-  appearance: button;
-  -moz-appearance: button;
-  -webkit-appearance: button;
-  text-decoration: none;
-  font: menu;
-  color: black;
-  padding: 2px 5px;
-  margin-bottom:2px;
-}
+      margin:0 5px;
+    }
+    .Debug div {
+      white-space:pre;
+      font-family:monospace;
+      font-size:10px;
+      line-height:11px;
+    }
+    .State {
+      border:1px solid blue;
+      padding:5px;
+      max-width:200px;
+      font-size:12px;
+      font-weight:bold;
+    }
+    .State button {
+      display:block;
+      font: menu;
+      color: black;
+      margin-bottom:2px;
+    }
+#eStart { display:block; }
 </style>
 </head>
 <body>
@@ -76,22 +75,22 @@ a {
 <div style="float:left">
   <div id="Idle" class="State" style="display:none">
     IDLE
-    <a id="eStart" href="#">eStart</a>
+    <button id="eStart">eStart</button>
   </div>
   
   <div id="Active" class="State" style="display:none">
     ACTIVE
-    <a id="eStop" href="#">eStop</a>
-    <a id="eRestart" href="#">eRestart</a>
+    <button id="eStop">eStop</button>
+    <button id="eRestart">eRestart</button>
   
     <div id="A" class="State" style="display:none">
       A
-      <a id="eA2B" href="#">eA2B</a>
-      <a id="eA2BB" href="#">eA2BB</a>
+      <button id="eA2B">eA2B</button>
+      <button id="eA2BB">eA2BB</button>
       <div id="AA" class="State" style="display:none">
         AA
-        <a id="eAA2B" href="#">eAA2B</a>
-        <a id="eAA2BB" href="#">eAA2BB</a>
+        <button id="eAA2B">eAA2B</button>
+        <button id="eAA2BB">eAA2BB</button>
       </div>
     </div>
   
@@ -146,7 +145,7 @@ var Demo = OOSMOS({ DEFAULT: 'Idle',
     eRestart: function() { this.Transition('Active'); },
     eStop:    function() { this.Transition('Idle');   },
 
-    REGION: { DEFAULT: 'A',
+    COMPOSITE: { DEFAULT: 'A',
       A: function() {
         var $A = $('#A');
         var $AA = $('#AA');
@@ -170,7 +169,7 @@ var Demo = OOSMOS({ DEFAULT: 'Idle',
           eA2B:  function() { this.Transition('Active.B');         },
           eA2BB: function() { this.Transition('Active.B.BB');      },
 
-          REGION: {
+          COMPOSITE: {
             AA: {
               ENTER: function() {
                 $AA.show();
@@ -207,7 +206,7 @@ var Demo = OOSMOS({ DEFAULT: 'Idle',
             $B.hide();
           },
   
-          REGION: {
+          COMPOSITE: {
             BB: {
               ENTER: function() {
                 $BB.show();
@@ -249,6 +248,9 @@ Demo.Event('eRestart');
 Demo.Event('eAA2BB');
 Demo.Assert(Demo.IsIn('Active.B.BB'));
 Demo.Event('eStop');
+
+Demo.Restart();
+Demo.Assert(Demo.IsIn('Idle'));
 
 </script>
 </body>

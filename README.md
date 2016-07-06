@@ -81,7 +81,7 @@ var StateMachine = OOSMOS({ DEFAULT: 'StateName',
     },
     EventName: function() {
     },
-    REGION: { DEFAULT: 'StateName',
+    COMPOSITE: { DEFAULT: 'StateName',
       StateName: {
         EventName: function() {
         }
@@ -95,7 +95,7 @@ StateMachine.Start();
 
 ### State Machine Structure Rules
 
-0. The `DEFAULT` state indicator is only required when there is more than one state in the `REGION`. *Note that the object passed to the top level `OOSMOS` function is a `REGION` object.*
+0. The `DEFAULT` state indicator is only required when there is more than one state in the `COMPOSITE`. *Note that the object passed to the top level `OOSMOS` function is a `COMPOSITE` object.*
 0. `ENTER` and `EXIT` are optional.  They are only supplied when there is something to do on entry or exit from the state.
 0. If a timeout is desired for the state, it must be set up in the special `ENTER` event using the `SetTimeoutSeconds()` API.
 0. If state names or event names contain special characters, they must be enclosed in quotes.  (Standard JavaScript object property rules.)
@@ -108,7 +108,7 @@ StateMachine.Start();
 |API|Description|
 |---|---|
 |`Event('Event', [, arguments...])`|Generates an event.  If the current state does not handle the event, it is propagated up the hierarchy until a state does handle it.  If no active state handles the event, then the event has no effect.<br><br>Any supplied arguments are passed to the appropriate event handler function.|
-|`IsIn('dot.qualified.statename'`)|Returns `true` if the specified dot-qualified state is active.<br><br>If state `A.AA.AAA` is the current leaf state, then `IsIn` of `'A'`, `'A.AA'` and `'A.AA.AAA'` will all return `true`.<br><br>Note that if your state machine is not hierarchical, i.e., it does not use the `REGION` keyword, then none of your state names will contain a "dot" character.|
+|`IsIn('dot.qualified.statename'`)|Returns `true` if the specified dot-qualified state is active.<br><br>If state `A.AA.AAA` is the current leaf state, then `IsIn` of `'A'`, `'A.AA'` and `'A.AA.AAA'` will all return `true`.<br><br>Note that if your state machine is not hierarchical, i.e., it does not use the `COMPOSITE` keyword, then none of your state names will contain a "dot" character.|
 |`SetTimeoutSeconds(Seconds)`|Establish a timeout for this state.<br><br>Multiple, nested timeouts can all be active at once.|
 |`Start()`|Starts the state machine.|
 |`Transition('dot.qualified.statename' [, arguments...])`|Transitions from one state to another.<br><br>Must be called from within an event function.  Any supplied arguments are passed to the `ENTER` function.|
@@ -121,7 +121,8 @@ StateMachine.Start();
 |`Assert(Condition, String)`|Calls the `Alert(String)` function if `Condition` is not met.|
 |`DebugPrint(String)`|Executes a `Print(String)` if debug mode is on.  See `SetDebug`.|
 |`Extend(Derived)`|Adds the object properties from the `Derived` object into the `OOSMOS` state machine object.  (See Inheritance example below.) |
-|`Print(String)`|When running under `Node.js`, executes a `console.log(String)`.<br><br>When running in a browser, requires an ID of a `<div>` element into which to write the string, specified in the `SetDebug` call). | 
+|`Print(String)`|When running under `Node.js`, executes a `console.log(String)`.<br><br>When running in a browser, requires an ID of a `<div>` element into which to write the string, specified in the `SetDebug` call). |
+|`Restart`|Re-initializes the state machine as if run for the first time.|
 |`SetDebug(DebugMode [, DebugID [, MaxLines]])`|Pass a `DebugMode` of `true` to enable debug mode, `false` otherwise.<br><br>When running under a browser, you must specify the  `HTML` `DebugID` of a `<div>` element into which debug lines will be written.<br><br>`MaxLines` specifies the maximum number of lines that are retained in the `<div>`.<br><br>*Note that most browsers slow down considerably due to inefficient scrolling if there are too many lines retained in the `<div>`.  Defaults to 200.*   |
 
 
@@ -132,14 +133,14 @@ StateMachine.Start();
 |`ENTER`|The `ENTER` function is called as the state is entered.|
 |`EXIT`|The `EXIT` function is called as the state is exited.|
 |`TIMEOUT`|This event is triggered if a timeout that was established in the `ENTER` function occurred.|
-|`REGION`|Specified by you to indicate nested states (hierarchy).|
+|`COMPOSITE`|Specified by you to indicate nested states (hierarchy).|
 |`DOTPATH`|Used internally by `OOSMOS`.|
 
-### Reserved Names in a Region Object
+### Reserved Names in a Composite Object
 
 |Reserved State Name|Description|
 |---|---|
-|`DEFAULT`|Specified by you inside of a `REGION` to indicate which of multiple states at the same level should be entered by default.<br><br>Not required if there is only one state in the region.|
+|`DEFAULT`|Specified by you inside of a `COMPOSITE` to indicate which of multiple states at the same level should be entered by default.<br><br>Not required if there is only one state in the composite.|
 
 
 ### State Local Variables

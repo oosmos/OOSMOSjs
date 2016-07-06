@@ -9,7 +9,7 @@ var TimeoutTest = OOSMOS({ DEFAULT: 'Outer',
     TIMEOUT: function() {
       this.Transition('OuterTimeout');
     },
-    REGION: {
+    COMPOSITE: {
       Inner: {
         ENTER: function() {
           this.Print('In state Outer.Inner');

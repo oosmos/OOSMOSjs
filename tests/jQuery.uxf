@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<diagram program="umlet" version="14.2">
+<diagram program="umlet" version="13.1">
   <zoom_level>10</zoom_level>
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>20</x>
-      <y>20</y>
+      <x>10</x>
+      <y>70</y>
       <w>110</w>
       <h>40</h>
     </coordinates>
@@ -19,10 +19,10 @@ valign=top
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>20</x>
-      <y>110</y>
+      <x>10</x>
+      <y>160</y>
       <w>370</w>
-      <h>190</h>
+      <h>230</h>
     </coordinates>
     <panel_attributes>Active
 --
@@ -34,8 +34,8 @@ valign=top
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>30</x>
-      <y>140</y>
+      <x>20</x>
+      <y>230</y>
       <w>130</w>
       <h>150</h>
     </coordinates>
@@ -49,8 +49,8 @@ valign=top
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>240</x>
-      <y>140</y>
+      <x>230</x>
+      <y>230</y>
       <w>140</w>
       <h>150</h>
     </coordinates>
@@ -64,8 +64,8 @@ valign=top
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>40</x>
-      <y>170</y>
+      <x>30</x>
+      <y>260</y>
       <w>90</w>
       <h>110</h>
     </coordinates>
@@ -79,8 +79,8 @@ valign=top
   <element>
     <id>UMLState</id>
     <coordinates>
-      <x>270</x>
-      <y>170</y>
+      <x>260</x>
+      <y>260</y>
       <w>90</w>
       <h>110</h>
     </coordinates>
@@ -94,9 +94,9 @@ valign=top
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>30</x>
-      <y>50</y>
-      <w>60</w>
+      <x>20</x>
+      <y>100</y>
+      <w>70</w>
       <h>80</h>
     </coordinates>
     <panel_attributes>eStart
@@ -106,8 +106,8 @@ lt=-&gt;</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>100</x>
-      <y>50</y>
+      <x>90</x>
+      <y>100</y>
       <w>60</w>
       <h>80</h>
     </coordinates>
@@ -118,20 +118,20 @@ lt=-&gt;</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>380</x>
-      <y>140</y>
-      <w>110</w>
+      <x>370</x>
+      <y>190</y>
+      <w>80</w>
       <h>80</h>
     </coordinates>
-    <panel_attributes>eRestart
+    <panel_attributes>eReset
 lt=-&gt;</panel_attributes>
     <additional_attributes>10.0;60.0;40.0;60.0;40.0;10.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>150</x>
-      <y>150</y>
+      <x>140</x>
+      <y>240</y>
       <w>110</w>
       <h>40</h>
     </coordinates>
@@ -142,8 +142,8 @@ lt=-&gt;</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>150</x>
-      <y>180</y>
+      <x>140</x>
+      <y>270</y>
       <w>140</w>
       <h>40</h>
     </coordinates>
@@ -154,8 +154,8 @@ lt=-&gt;</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>120</x>
-      <y>210</y>
+      <x>110</x>
+      <y>300</y>
       <w>140</w>
       <h>40</h>
     </coordinates>
@@ -166,13 +166,59 @@ lt=-&gt;</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>120</x>
-      <y>240</y>
+      <x>110</x>
+      <y>330</y>
       <w>170</w>
       <h>40</h>
     </coordinates>
     <panel_attributes>eAA2BB
 lt=-&gt;</panel_attributes>
     <additional_attributes>10.0;20.0;150.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <type>com.baselet.element.old.element.InitialState</type>
+    <coordinates>
+      <x>20</x>
+      <y>20</y>
+      <w>20</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes/>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.baselet.element.old.element.Relation</type>
+    <coordinates>
+      <x>0</x>
+      <y>0</y>
+      <w>50</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+</panel_attributes>
+    <additional_attributes>30;70;30;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.baselet.element.old.element.Relation</type>
+    <coordinates>
+      <x>10</x>
+      <y>170</y>
+      <w>50</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+</panel_attributes>
+    <additional_attributes>30;60;30;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.baselet.element.old.element.InitialState</type>
+    <coordinates>
+      <x>30</x>
+      <y>190</y>
+      <w>20</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes/>
+    <additional_attributes/>
   </element>
 </diagram>

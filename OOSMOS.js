@@ -22,50 +22,52 @@
 |*| SOFTWARE.
 \*/
 
-var OOSMOS = function(Region) {
+var OOSMOS = function(Composite) {
   'use strict';
 
-  var m_ROOT = { REGION: Region };
-  var m_State;
-  var m_Timeouts = [];
-  var m_Interval;
-  var m_EventSourceState;
-  var m_DotPath2State = {};
-  var m_DebugMode = false;
-  var m_InBrowser = typeof(window) !== 'undefined';
+  const m_ROOT = { COMPOSITE: Composite };
+  var   m_State;
+  var   m_Timeouts = [];
+  var   m_Interval;
+  var   m_EventSourceState;
+  var   m_DotPath2State = {};
+
+  var   m_DebugMode = false;
+  var   m_InBrowser = typeof(window) !== 'undefined';
 
   if (m_InBrowser) {
     var m_DebugID;
-    var m_LinesOut    = 0;
+    var m_LinesOut = 0;
     var m_MaxLinesOut;
+    var m_ScrollIntoView;
   }
 
-  (function InstrumentStateMachine() {
+  function InstrumentStateMachine() {
     var StateStack = [];
 
-    function InstrumentRegion(Region) {
-      for (var StateName in Region) {
+    function InstrumentComposite(Composite) {
+      for (var StateName in Composite) {
         if (StateName === 'DEFAULT') {
           continue;
         }
 
-        if (typeof(Region[StateName]) === 'function') {
-          Region[StateName] = Region[StateName]();
+        if (typeof(Composite[StateName]) === 'function') {
+          Composite[StateName] = Composite[StateName]();
         }
 
-        InstrumentState(Region[StateName], StateName);
+        InstrumentState(Composite[StateName], StateName);
       }
 
       //
-      // If there is only one state in the region, set the
+      // If there is only one state in the composite, set the
       // DEFAULT so the user doesn't have to.
       //
-      if (Object.keys(Region).length === 1) {
-        Region.DEFAULT = StateName;
+      if (Object.keys(Composite).length === 1) {
+        Composite.DEFAULT = StateName;
       }
       else {
-        if (!Region.DEFAULT) {
-          this.Alert('You must specify a DEFAULT if there are more than one state in the region.');
+        if (!Composite.DEFAULT) {
+          this.Alert('You must specify a DEFAULT if there are more than one state in the composite.');
         }
       }
     }
@@ -79,29 +81,29 @@ var OOSMOS = function(Region) {
         this.Alert('EXIT must be a function.');
       }
 
-      if (typeof(State.REGION) === 'function') {
-        State.REGION = State.REGION();
+      if (typeof(State.COMPOSITE) === 'function') {
+        State.COMPOSITE = State.COMPOSITE();
       }
 
       StateStack.push(StateName);
         State.DOTPATH = StateStack.join('.');
         m_DotPath2State[State.DOTPATH] = State;
 
-        if (State.REGION) {
-          InstrumentRegion(State.REGION);
+        if (State.COMPOSITE) {
+          InstrumentComposite(State.COMPOSITE);
         }
       StateStack.pop();
     }
 
     InstrumentState(m_ROOT, 'ROOT');
-  }());
+  };
 
   function StripROOT(StateName) {
     return StateName.replace('ROOT.', '');
   }
 
-  function EnterDefaultStates(Region) {
-    m_State = Region[Region.DEFAULT];
+  function EnterDefaultStates(Composite) {
+    m_State = Composite[Composite.DEFAULT];
 
     this.DebugPrint('==> '+StripROOT(m_State.DOTPATH));
 
@@ -109,17 +111,17 @@ var OOSMOS = function(Region) {
       m_State.ENTER.call(this);
     }
 
-    if (m_State.REGION) {
-      EnterDefaultStates.call(this, m_State.REGION);
+    if (m_State.COMPOSITE) {
+      EnterDefaultStates.call(this, m_State.COMPOSITE);
     }
   }
 
   function CalculateLCA(StringA, StringB) {
-    var A = StringA.split('.');
-    var B = StringB.split('.');
+    const A = StringA.split('.');
+    const B = StringB.split('.');
 
-    var Iterations = Math.min(A.length, B.length);
-    var Return = [];
+    const Iterations = Math.min(A.length, B.length);
+    var   Return = [];
 
     for (var I = 0; I < Iterations && A[I] === B[I]; I++) {
       Return.push(A[I]);
@@ -150,16 +152,16 @@ var OOSMOS = function(Region) {
         LCA = A.join('.');
       }
   
-      var Args = Array.prototype.splice.call(arguments, 1);
+      const Args = Array.prototype.splice.call(arguments, 1);
 
       function EnterStates(From, To) {
         if (From === To) {
           return;
         }
 
-        var FromArray = From.split('.');
-        var ToSuffix = To.replace(From+'.', '');
-        var ToArray  = ToSuffix.split('.');
+        var   FromArray = From.split('.');
+        const ToSuffix = To.replace(From+'.', '');
+        var   ToArray  = ToSuffix.split('.');
 
         do {
           FromArray.push(ToArray.shift());
@@ -200,13 +202,29 @@ var OOSMOS = function(Region) {
       ExitStates.call(this, LCA, m_State.DOTPATH);
       EnterStates.call(this, LCA, To);
 
-      if (m_DotPath2State[m_State.DOTPATH].REGION) {
-        EnterDefaultStates.call(this, m_DotPath2State[m_State.DOTPATH].REGION);
+      if (m_DotPath2State[m_State.DOTPATH].COMPOSITE) {
+        EnterDefaultStates.call(this, m_DotPath2State[m_State.DOTPATH].COMPOSITE);
       }
     },
 
     Start: function() {
-      EnterDefaultStates.call(this, m_ROOT.REGION);
+      InstrumentStateMachine();
+      EnterDefaultStates.call(this, m_ROOT.COMPOSITE);
+    },
+
+    Restart: function() {
+      m_State            = undefined;
+      m_Timeouts         = [];
+      m_Interval         = undefined;
+      m_EventSourceState = undefined;
+      m_DotPath2State    = {};
+    
+      if (m_InBrowser) {
+        document.getElementById(m_DebugID).innerHTML = '';
+        m_LinesOut = 0;
+      }
+    
+      this.Start();
     },
 
     IsIn: function(StateDotPath) {
@@ -216,25 +234,25 @@ var OOSMOS = function(Region) {
         return true;
       }
 
-      var Beginning = StateDotPath+'.';
+      const Beginning = StateDotPath+'.';
 
       return m_State.DOTPATH.substr(0, Beginning.length) === Beginning;
     },
 
     Event: function(EventString) {
-      var CandidateStatePath = m_State.DOTPATH.split('.');
+      const CandidateStatePath = m_State.DOTPATH.split('.');
 
       while (CandidateStatePath.length > 0) {
-        var CandidateStateDotPath = CandidateStatePath.join('.');
-        var CandidateState = m_DotPath2State[CandidateStateDotPath];
+        const CandidateStateDotPath = CandidateStatePath.join('.');
+        const CandidateState = m_DotPath2State[CandidateStateDotPath];
 
         if (EventString in CandidateState) {
           this.DebugPrint('EVENT: '+EventString+' sent to '+StripROOT(m_State.DOTPATH));
 
-          var EventFunc = CandidateState[EventString];
+          const EventFunc = CandidateState[EventString];
 
           if (EventFunc) {
-            var Args = Array.prototype.splice.call(arguments, 1);
+            const Args = Array.prototype.splice.call(arguments, 1);
 
             m_EventSourceState = CandidateState;
               EventFunc.apply(this, Args);
@@ -256,7 +274,7 @@ var OOSMOS = function(Region) {
       if (m_Interval === undefined) {
         var that = this;
 
-        var IntervalTick = function () {
+        const IntervalTick = function () {
           for (var StateDotPath in m_Timeouts) {
             m_Timeouts[StateDotPath] -= 1;
 
@@ -295,7 +313,7 @@ var OOSMOS = function(Region) {
       }
     },
 
-    SetDebug: function(DebugMode, DebugID, MaxLinesOut) {
+    SetDebug: function(DebugMode, DebugID, MaxLinesOut, ScrollIntoView) {
       if (typeof(DebugMode) !== 'boolean') {
         this.Alert('First argument of SetDebug must be a boolean value. Defaulting to false.');
         DebugMode = false;
@@ -311,6 +329,7 @@ var OOSMOS = function(Region) {
 
         m_DebugID = DebugID;
         m_MaxLinesOut = MaxLinesOut || 200;
+        m_ScrollIntoView = ScrollIntoView || false;
       }
     },
 
@@ -323,17 +342,18 @@ var OOSMOS = function(Region) {
       var DebugDIV = document.getElementById(m_DebugID);
       var TextDIV  = document.createElement('div');
       var Text     = document.createTextNode(String);
+
       TextDIV.appendChild(Text);
       DebugDIV.appendChild(TextDIV);
 
       function IsVisible(Element) {
-        var Rect       = Element.getBoundingClientRect();
-        var ViewHeight = Math.max(document.documentElement.clientHeight, window.innerHeight);
+        const Rect       = Element.getBoundingClientRect();
+        const ViewHeight = Math.max(document.documentElement.clientHeight, window.innerHeight);
 
         return !(Rect.bottom < 0 || Rect.top - ViewHeight >= 0);
       }
 
-      if (IsVisible(DebugDIV)) {
+      if (m_ScrollIntoView && IsVisible(DebugDIV)) {
         TextDIV.scrollIntoView(false);
       }
 
