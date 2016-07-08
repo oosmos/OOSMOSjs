@@ -1,4 +1,4 @@
-## `OOSMOS.js` --  A Hierarchical State Machine Framework for JavaScript.
+## OOSMOS.js --  A Hierarchical State Machine Framework for JavaScript.
 
 OOSMOS for JavaScript is an open source, easy-to-use hierarchical state machine framework comprised of a single object, called OOSMOS, housed in the file `OOSMOS.js`.
 
