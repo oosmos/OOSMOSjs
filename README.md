@@ -1,8 +1,8 @@
-<!---
-## [OOSMOS.js](https://oosmos.com/OOSMOS_js) -- Hierarchical State Machine for JavaScript.
--->
-
 ## `OOSMOS.js` --  A Hierarchical State Machine Framework for JavaScript.
+
+OOSMOS for JavaScript is an open source, easy-to-use hierarchical state machine framework comprised of a single object, called OOSMOS, housed in the file `OOSMOS.js`.
+
+Live Demo: [OOSMOSjs](https://oosmos.com/OOSMOSjs)
 
 ### Features
 
@@ -11,13 +11,13 @@
 - Same code runs in a browser or `Node.js`.
 - Supports arbitrarily deep hierarchical state machines.
 - Supports state local variables. (Ideal for caching `jQuery` elements.)
-- Simple API: Only 5 principle APIs.
+- Simple API: Only 5 principal APIs.
 - Can run multiple state machines concurrently.
 - Can inherit any `OOSMOS` state machine without using the JavaScript prototype mechanism.  (See the **Inheritance** example below.)
 - Events can pass arguments into the state entry function via transitions.
 
 *Note: OOSMOS stands for **O**bject **O**riented **S**tate **M**achine **O**perating **S**ystem.  OOSMOS is a small footprint C/C++ state machine operating system for the industrial IOT space.  (See [www.oosmos.com](http://www.oosmos.com).) This JavaScript implementation borrows from the Object-Oriented and 
-State Machine elements of OOSMOS but not the Operating System elements.*
+State Machine elements of OOSMOS but the Operating System elements are supported by the JavaScript runtime.*
 
 ### Example
 
@@ -96,7 +96,7 @@ StateMachine.Start();
 ### State Machine Structure Rules
 
 0. The `DEFAULT` state indicator is only required when there is more than one state in the `COMPOSITE`. *Note that the object passed to the top level `OOSMOS` function is a `COMPOSITE` object.*
-0. `ENTER` and `EXIT` are optional.  They are only supplied when there is something to do on entry or exit from the state.
+0. `ENTER` and `EXIT` are optional. They are only supplied when there is something to do on entry or exit from the state.
 0. If a timeout is desired for the state, it must be set up in the special `ENTER` event using the `SetTimeoutSeconds()` API.
 0. If state names or event names contain special characters, they must be enclosed in quotes.  (Standard JavaScript object property rules.)
 0. A `Transition` can only be executed within an `OOSMOS` event function.
@@ -111,7 +111,7 @@ StateMachine.Start();
 |`IsIn('dot.qualified.statename'`)|Returns `true` if the specified dot-qualified state is active.<br><br>If state `A.AA.AAA` is the current leaf state, then `IsIn` of `'A'`, `'A.AA'` and `'A.AA.AAA'` will all return `true`.<br><br>Note that if your state machine is not hierarchical, i.e., it does not use the `COMPOSITE` keyword, then none of your state names will contain a "dot" character.|
 |`SetTimeoutSeconds(Seconds)`|Establish a timeout for this state.<br><br>Multiple, nested timeouts can all be active at once.|
 |`Start()`|Starts the state machine.|
-|`Transition('dot.qualified.statename' [, arguments...])`|Transitions from one state to another.<br><br>Must be called from within an event function.  Any supplied arguments are passed to the `ENTER` function.|
+|`Transition('dot.qualified.statename' [, arguments...])`|Transitions from one state to another.<br><br>Must be called from within an event function.  Any supplied arguments are passed to the `ENTER` function of the target state.|
 
 ### Support APIs
 
@@ -122,8 +122,8 @@ StateMachine.Start();
 |`DebugPrint(String)`|Executes a `Print(String)` if debug mode is on.  See `SetDebug`.|
 |`Extend(Derived)`|Adds the object properties from the `Derived` object into the `OOSMOS` state machine object.  (See Inheritance example below.) |
 |`Print(String)`|When running under `Node.js`, executes a `console.log(String)`.<br><br>When running in a browser, requires an ID of a `<div>` element into which to write the string, specified in the `SetDebug` call). |
-|`Restart`|Re-initializes the state machine as if run for the first time.|
-|`SetDebug(DebugMode [, DebugID [, MaxLines]])`|Pass a `DebugMode` of `true` to enable debug mode, `false` otherwise.<br><br>When running under a browser, you must specify the  `HTML` `DebugID` of a `<div>` element into which debug lines will be written.<br><br>`MaxLines` specifies the maximum number of lines that are retained in the `<div>`.<br><br>*Note that most browsers slow down considerably due to inefficient scrolling if there are too many lines retained in the `<div>`.  Defaults to 200.*   |
+|`Restart`|Re-initializes the state machine as if run for the first time. Principally used for testing.|
+|`SetDebug(DebugMode [, DebugID [, MaxLines [, ScrollIntoView]]])`|Pass a `DebugMode` of `true` to enable debug mode, `false` otherwise.<br><br>The next three arguments apply only when running under a browser.<br><br>Required `DebugID` specifies the  `id` of a `<div>` element into which debug lines will be written.<br><br>Optional `MaxLines` specifies the maximum number of lines that are retained in the `<div>`.  *Note that most browsers slow down considerably due to inefficient scrolling if there are too many lines retained in the `<div>`.  Defaults to 200.*<br><br>If `true`, optional `ScrollIntoView` causes each new debug line to come into focus.|
 
 
 ### Reserved Names in a State Object
@@ -145,7 +145,7 @@ StateMachine.Start();
 
 ### State Local Variables
 
-Each state must (eventually) specify an object of events.  See state `A`, below.  It specifies events `ENTER` and `TIMEOUT` within an object.  If you want to specify one or more variables that are local only to the state, you can instead specify a function that returns the required object of events.  An example is state `B` below. We specify a function that declares a variable `Timeouts` and then returns the object of events.  All the variables declared form a closure with state `B`'s object of events.  This is very useful for, say, caching `jQuery` elements for the life of the state.
+Each state must (eventually) specify an object of events.  See state `A`, below.  It specifies events `ENTER` and `TIMEOUT` within an object.  If you want to specify one or more variables that are local only to the state, you can instead specify a function that returns the required object of events.  An example is state `B` below. We specify a function that declares state-local variables and then returns the object of events.  All the variables declared form a closure with state `B`'s object of events.  This is very useful for, say, caching `jQuery` elements for the life of the state.
 
 
 ```javascript
@@ -175,7 +175,6 @@ var TimeoutDemo = OOSMOS({ DEFAULT: 'A',
   }  
 });
 
-TimeoutDemo.SetDebug(true);
 TimeoutDemo.Start();
 ```
 
@@ -207,7 +206,7 @@ var MyExtendedStateMachine = (function() {
 
 Note that we can establish `jQuery` event handlers in the `ENTER` event and then `unbind` them in the corresponding `EXIT` event.  
 
-Also note that, but cause the `jQuery` event is executed under a different `this`, we have to use a closure to remember our state machine's `this`.  We use the common `var that = this;` JavaScript closure technique. 
+Also note that, because the `jQuery` `click` event is executed under a different `this`, we have to use a closure to remember our state machine's `this`.  We use the common `var that = this;` JavaScript closure technique. 
 
 ```javascript
   .
@@ -226,7 +225,9 @@ Also note that, but cause the `jQuery` event is executed under a different `this
       $('#eRestart').unbind('click');
 
       $('#Active').hide();
-    }
+    },
+    .
+    .
   },
   .
   .
@@ -256,11 +257,33 @@ Further, we can use state-local variables to cache the `jQuery` selectors, like 
         $eRestart.unbind('click');
 
         $Active.hide();
-      }
+      },
+      .
+      .
     };
   },
   .
   .
+```
+
+## Debug Output
+
+A `StateName` being entered is represented like this:
+
+```
+--> StateName
+```
+
+A `StateName` being exited is represented like this:
+
+```
+    StateName -->
+```
+
+A default state being entered is indicated like this:
+
+```
+==> StateName
 ```
 
 ## Tests
