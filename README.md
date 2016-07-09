@@ -16,8 +16,8 @@ Live Demo: [OOSMOSjs](https://oosmos.com/OOSMOSjs)
 - Can inherit any `OOSMOS` state machine without using the JavaScript prototype mechanism.  (See the **Inheritance** example below.)
 - Events can pass arguments into the state entry function via transitions.
 
-*Note: OOSMOS stands for **O**bject **O**riented **S**tate **M**achine **O**perating **S**ystem.  OOSMOS is a small footprint C/C++ state machine operating system for the industrial IOT space.  (See [www.oosmos.com](http://www.oosmos.com).) This JavaScript implementation borrows from the Object-Oriented and 
-State Machine elements of OOSMOS but the Operating System elements are supported by the JavaScript runtime.*
+_Note: OOSMOS stands for **O**bject **O**riented **S**tate **M**achine **O**perating **S**ystem.  OOSMOS is a small footprint C/C++ state machine operating system for the industrial IOT space.  (See [www.oosmos.com](http://www.oosmos.com).) This JavaScript implementation borrows from the Object-Oriented and 
+State Machine elements of OOSMOS but the Operating System elements are supported by the JavaScript runtime._
 
 ### Example
 
