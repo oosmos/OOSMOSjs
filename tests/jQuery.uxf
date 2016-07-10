@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<diagram program="umlet" version="13.1">
+<diagram program="umlet" version="14.2">
   <zoom_level>10</zoom_level>
   <element>
     <id>UMLState</id>
@@ -96,7 +96,7 @@ valign=top
     <coordinates>
       <x>20</x>
       <y>100</y>
-      <w>70</w>
+      <w>60</w>
       <h>80</h>
     </coordinates>
     <panel_attributes>eStart
@@ -120,7 +120,7 @@ lt=-&gt;</panel_attributes>
     <coordinates>
       <x>370</x>
       <y>190</y>
-      <w>80</w>
+      <w>90</w>
       <h>80</h>
     </coordinates>
     <panel_attributes>eReset
@@ -147,7 +147,7 @@ lt=-&gt;</panel_attributes>
       <w>140</w>
       <h>40</h>
     </coordinates>
-    <panel_attributes>eA2B
+    <panel_attributes>eA2BB
 lt=-&gt;</panel_attributes>
     <additional_attributes>10.0;20.0;120.0;20.0</additional_attributes>
   </element>
