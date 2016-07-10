@@ -25,7 +25,7 @@
 var OOSMOS = function(Composite) {
   'use strict';
 
-  const m_ROOT = { COMPOSITE: Composite };
+  var   m_ROOT = { COMPOSITE: Composite };
   var   m_State;
   var   m_Timeouts = [];
   var   m_Interval;
@@ -117,11 +117,11 @@ var OOSMOS = function(Composite) {
   }
 
   function CalculateLCA(StringA, StringB) {
-    const A = StringA.split('.');
-    const B = StringB.split('.');
+    var A = StringA.split('.');
+    var B = StringB.split('.');
 
-    const Iterations = Math.min(A.length, B.length);
-    var   Return = [];
+    var Iterations = Math.min(A.length, B.length);
+    var Return = [];
 
     for (var I = 0; I < Iterations && A[I] === B[I]; I++) {
       Return.push(A[I]);
@@ -152,16 +152,16 @@ var OOSMOS = function(Composite) {
         LCA = A.join('.');
       }
   
-      const Args = Array.prototype.splice.call(arguments, 1);
+      var Args = Array.prototype.splice.call(arguments, 1);
 
       function EnterStates(From, To) {
         if (From === To) {
           return;
         }
 
-        var   FromArray = From.split('.');
-        const ToSuffix = To.replace(From+'.', '');
-        var   ToArray  = ToSuffix.split('.');
+        var FromArray = From.split('.');
+        var ToSuffix = To.replace(From+'.', '');
+        var ToArray  = ToSuffix.split('.');
 
         do {
           FromArray.push(ToArray.shift());
@@ -234,25 +234,25 @@ var OOSMOS = function(Composite) {
         return true;
       }
 
-      const Beginning = StateDotPath+'.';
+      var Beginning = StateDotPath+'.';
 
       return m_State.DOTPATH.substr(0, Beginning.length) === Beginning;
     },
 
     Event: function(EventString) {
-      const CandidateStatePath = m_State.DOTPATH.split('.');
+      var CandidateStatePath = m_State.DOTPATH.split('.');
 
       while (CandidateStatePath.length > 0) {
-        const CandidateStateDotPath = CandidateStatePath.join('.');
-        const CandidateState = m_DotPath2State[CandidateStateDotPath];
+        var CandidateStateDotPath = CandidateStatePath.join('.');
+        var CandidateState = m_DotPath2State[CandidateStateDotPath];
 
         if (EventString in CandidateState) {
           this.DebugPrint('EVENT: '+EventString+' sent to '+StripROOT(m_State.DOTPATH));
 
-          const EventFunc = CandidateState[EventString];
+          var EventFunc = CandidateState[EventString];
 
           if (EventFunc) {
-            const Args = Array.prototype.splice.call(arguments, 1);
+            var Args = Array.prototype.splice.call(arguments, 1);
 
             m_EventSourceState = CandidateState;
               EventFunc.apply(this, Args);
@@ -274,7 +274,7 @@ var OOSMOS = function(Composite) {
       if (m_Interval === undefined) {
         var that = this;
 
-        const IntervalTick = function () {
+        var IntervalTick = function () {
           for (var StateDotPath in m_Timeouts) {
             m_Timeouts[StateDotPath] -= 1;
 
@@ -347,8 +347,8 @@ var OOSMOS = function(Composite) {
       DebugDIV.appendChild(TextDIV);
 
       function IsVisible(Element) {
-        const Rect       = Element.getBoundingClientRect();
-        const ViewHeight = Math.max(document.documentElement.clientHeight, window.innerHeight);
+        var Rect       = Element.getBoundingClientRect();
+        var ViewHeight = Math.max(document.documentElement.clientHeight, window.innerHeight);
 
         return !(Rect.bottom < 0 || Rect.top - ViewHeight >= 0);
       }
