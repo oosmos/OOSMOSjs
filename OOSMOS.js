@@ -133,8 +133,7 @@ var OOSMOS = function(Composite) {
   return {
     Transition: function(To) {
       if (m_EventSourceState === undefined) {
-        this.Alert('You must only transition within an OOSMOS event handler.');
-        return;
+        m_EventSourceState = m_State;
       }
 
       To = 'ROOT.'+To;
@@ -205,6 +204,8 @@ var OOSMOS = function(Composite) {
       if (m_DotPath2State[m_State.DOTPATH].COMPOSITE) {
         EnterDefaultStates.call(this, m_DotPath2State[m_State.DOTPATH].COMPOSITE);
       }
+
+      m_EventSourceState = undefined;
     },
 
     Start: function() {

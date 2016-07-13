@@ -99,7 +99,6 @@ StateMachine.Start();
 0. `ENTER` and `EXIT` are optional. They are only supplied when there is something to do on entry or exit from the state.
 0. If a timeout is desired for the state, it must be set up in the special `ENTER` event using the `SetTimeoutSeconds()` API.
 0. If state names or event names contain special characters, they must be enclosed in quotes.  (Standard JavaScript object property rules.)
-0. A `Transition` can only be executed within an `OOSMOS` event function.
 
 ## API
 
@@ -216,8 +215,8 @@ Also note that, because the `jQuery` `click` event is executed under a different
       $('#Active').show();
 
       var that = this;
-      $('#eStop').click(function()    { that.Event('eStop');    });
-      $('#eRestart').click(function() { that.Event('eRestart'); });
+      $('#eStop').click(function()    { that.Transition('Idle');   });
+      $('#eRestart').click(function() { that.Transition('Active'); });
     },
 
     EXIT: function() {
@@ -225,9 +224,7 @@ Also note that, because the `jQuery` `click` event is executed under a different
       $('#eRestart').unbind('click');
 
       $('#Active').hide();
-    },
-    .
-    .
+    }
   },
   .
   .
@@ -248,8 +245,8 @@ Further, we can use state-local variables to cache the `jQuery` selectors, like 
         $Active.show();
 
         var that = this;
-        $eStop.click(function()    { that.Event('eStop');    });
-        $eRestart.click(function() { that.Event('eRestart'); });
+        $('#eStop').click(function()    { that.Transition('Idle');   });
+        $('#eRestart').click(function() { that.Transition('Active'); });
       },
 
       EXIT: function() {
@@ -257,9 +254,7 @@ Further, we can use state-local variables to cache the `jQuery` selectors, like 
         $eRestart.unbind('click');
 
         $Active.hide();
-      },
-      .
-      .
+      }
     };
   },
   .

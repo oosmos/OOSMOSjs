@@ -112,17 +112,13 @@ var Demo = OOSMOS({ DEFAULT: 'Idle',
       $('#Idle').show();
 
       var that = this;
-      $('#eStart').click(function() { that.Event('eStart'); });
+      $('#eStart').click(function() { that.Transition('Active'); });
     },
 
     EXIT: function() {
       $('#eStart').unbind('click');
 
       $('#Idle').hide();
-    },
-
-    eStart: function() {
-      this.Transition('Active');
     }
   },
 
@@ -131,8 +127,8 @@ var Demo = OOSMOS({ DEFAULT: 'Idle',
       $('#Active').show();
 
       var that = this;
-      $('#eStop').click(function()    { that.Event('eStop');    });
-      $('#eRestart').click(function() { that.Event('eRestart'); });
+      $('#eStop').click(function()    { that.Transition('Idle');   });
+      $('#eRestart').click(function() { that.Transition('Active'); });
     },
 
     EXIT: function() {
@@ -141,9 +137,6 @@ var Demo = OOSMOS({ DEFAULT: 'Idle',
 
       $('#Active').hide();
     },
-
-    eRestart: function() { this.Transition('Active'); },
-    eStop:    function() { this.Transition('Idle');   },
 
     COMPOSITE: { DEFAULT: 'A',
       A: function() {
@@ -155,8 +148,8 @@ var Demo = OOSMOS({ DEFAULT: 'Idle',
             $A.show();
   
             var that = this;
-            $('#eA2B').click(function()  { that.Event('eA2B');  });
-            $('#eA2BB').click(function() { that.Event('eA2BB'); });
+            $('#eA2B').click(function()  { that.Transition('Active.B');    });
+            $('#eA2BB').click(function() { that.Transition('Active.B.BB'); });
           },
   
           EXIT: function() {
@@ -166,17 +159,14 @@ var Demo = OOSMOS({ DEFAULT: 'Idle',
             $A.hide();
           },
 
-          eA2B:  function() { this.Transition('Active.B');         },
-          eA2BB: function() { this.Transition('Active.B.BB');      },
-
           COMPOSITE: {
             AA: {
               ENTER: function() {
                 $AA.show();
   
                 var that = this;
-                $('#eAA2B').click(function()  { that.Event('eAA2B');  });
-                $('#eAA2BB').click(function() { that.Event('eAA2BB'); });
+                $('#eAA2B').click(function()  { that.Transition('Active.B');    });
+                $('#eAA2BB').click(function() { that.Transition('Active.B.BB'); });
               },
       
               EXIT: function() {
@@ -184,10 +174,7 @@ var Demo = OOSMOS({ DEFAULT: 'Idle',
                 $('#eAA2BB').unbind('click');
   
                 $AA.hide();
-              },
-  
-              eAA2B:  function() { this.Transition('Active.B');    },
-              eAA2BB: function() { this.Transition('Active.B.BB'); }
+              }
             }
           }
         };
@@ -225,32 +212,6 @@ var Demo = OOSMOS({ DEFAULT: 'Idle',
 
 Demo.SetDebug(true, 'debugTest');
 Demo.Start();
-
-Demo.Assert(Demo.IsIn('Idle'));
-Demo.Event('eStart');
-Demo.Assert(Demo.IsIn('Active'));
-Demo.Assert(Demo.IsIn('Active.A'));
-Demo.Assert(Demo.IsIn('Active.A.AA'));
-Demo.Event('eRestart');
-Demo.Assert(Demo.IsIn('Active.A.AA'));
-Demo.Event('eStop');
-Demo.Assert(Demo.IsIn('Idle'));
-Demo.Event('eStart');
-Demo.Event('eA2B');
-Demo.Assert(Demo.IsIn('Active.B.BB'));
-Demo.Event('eRestart');
-Demo.Event('eA2BB');
-Demo.Assert(Demo.IsIn('Active.B.BB'));
-Demo.Event('eRestart');
-Demo.Event('eAA2B');
-Demo.Assert(Demo.IsIn('Active.B.BB'));
-Demo.Event('eRestart');
-Demo.Event('eAA2BB');
-Demo.Assert(Demo.IsIn('Active.B.BB'));
-Demo.Event('eStop');
-
-Demo.Restart();
-Demo.Assert(Demo.IsIn('Idle'));
 
 </script>
 </body>
