@@ -146,7 +146,8 @@ namespace OOSMOS {
       const A = StringA.split('.');
       const B = StringB.split('.');
 
-      let Iterations = Math.min(A.length, B.length);
+      const Iterations = Math.min(A.length, B.length);
+
       let Return: string[] = [];
 
       for (let I = 0; I < Iterations && A[I] === B[I]; I++) {
@@ -183,9 +184,10 @@ namespace OOSMOS {
           return;
         }
 
-        let FromArray = From.split('.');
-        let ToSuffix = To.replace(From + '.', '');
-        let ToArray  = ToSuffix.split('.');
+        const FromArray = From.split('.');
+        const ToSuffix = To.replace(From + '.', '');
+        const ToArray  = ToSuffix.split('.');
+
         let StatePath: string;
 
         do {
@@ -270,16 +272,16 @@ namespace OOSMOS {
       const CandidateStatePath = this.m_State.DOTPATH.split('.');
 
       while (CandidateStatePath.length > 0) {
-        let CandidateStateDotPath = CandidateStatePath.join('.');
-        let CandidateState = this.m_DotPath2State[CandidateStateDotPath];
+        const CandidateStateDotPath = CandidateStatePath.join('.');
+        const CandidateState = this.m_DotPath2State[CandidateStateDotPath];
 
         if (EventString in CandidateState) {
           this.DebugPrint('EVENT: ' + EventString + ' sent to ' + this.StripROOT(this.m_State.DOTPATH));
 
-          let EventFunc = <() => void> CandidateState[EventString];
+          const EventFunc = <() => void> CandidateState[EventString];
 
           if (EventFunc) {
-            let Args = Array.prototype.splice.call(arguments, 1);
+            const Args = Array.prototype.splice.call(arguments, 1);
 
             this.m_EventSourceState = CandidateState;
             EventFunc.apply(this, Args);
@@ -300,11 +302,11 @@ namespace OOSMOS {
 
       if (this.m_Interval === undefined) {
         let IntervalTick = () => {
-          for (let StateDotPath in this.m_Timeouts) {
+          for (const StateDotPath in this.m_Timeouts) {
             this.m_Timeouts[StateDotPath] -= 1;
 
             if (this.m_Timeouts[StateDotPath] <= 0) {
-              let State = this.m_DotPath2State[StateDotPath];
+              const State = this.m_DotPath2State[StateDotPath];
               this.m_EventSourceState = this.m_State;
               this.DebugPrint('Delete Timeout: ' + this.m_State.DOTPATH + ' ' + this.m_Timeouts[StateDotPath]);
               delete this.m_Timeouts[StateDotPath];
@@ -364,9 +366,9 @@ namespace OOSMOS {
         return;
       }
 
-      let DebugDIV = document.getElementById(this.m_DebugID);
-      let TextDIV  = document.createElement('div');
-      let Text     = document.createTextNode(Message);
+      const DebugDIV = document.getElementById(this.m_DebugID);
+      const TextDIV  = document.createElement('div');
+      const Text     = document.createTextNode(Message);
 
       TextDIV.appendChild(Text);
       DebugDIV.appendChild(TextDIV);
