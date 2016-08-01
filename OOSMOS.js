@@ -32,10 +32,7 @@ var OOSMOS;
             this.m_DebugMode = false;
             this.m_InBrowser = typeof (window) !== 'undefined';
             if (this.m_InBrowser) {
-                this.m_DebugID;
                 this.m_LinesOut = 0;
-                this.m_MaxLinesOut;
-                this.m_ScrollIntoView;
             }
         }
         StateMachine.prototype.InstrumentStateMachine = function () {
@@ -210,19 +207,19 @@ var OOSMOS;
             this.DebugPrint('EVENT: ' + EventString + '. No handler from ' + this.StripROOT(this.m_State.DOTPATH));
         };
         StateMachine.prototype.SetTimeoutSeconds = function (TimeoutSeconds) {
+            var _this = this;
             this.m_Timeouts[this.m_State.DOTPATH] = TimeoutSeconds;
             if (this.m_Interval === undefined) {
-                var that_1 = this;
                 var IntervalTick = function () {
-                    for (var StateDotPath in that_1.m_Timeouts) {
-                        that_1.m_Timeouts[StateDotPath] -= 1;
-                        if (that_1.m_Timeouts[StateDotPath] <= 0) {
-                            var State = that_1.m_DotPath2State[StateDotPath];
-                            that_1.m_EventSourceState = that_1.m_State;
-                            that_1.DebugPrint('Delete Timeout: ' + that_1.m_State.DOTPATH + ' ' + that_1.m_Timeouts[StateDotPath]);
-                            delete that_1.m_Timeouts[StateDotPath];
+                    for (var StateDotPath in _this.m_Timeouts) {
+                        _this.m_Timeouts[StateDotPath] -= 1;
+                        if (_this.m_Timeouts[StateDotPath] <= 0) {
+                            var State = _this.m_DotPath2State[StateDotPath];
+                            _this.m_EventSourceState = _this.m_State;
+                            _this.DebugPrint('Delete Timeout: ' + _this.m_State.DOTPATH + ' ' + _this.m_Timeouts[StateDotPath]);
+                            delete _this.m_Timeouts[StateDotPath];
                             if (State.TIMEOUT) {
-                                State.TIMEOUT.call(that_1);
+                                State.TIMEOUT.call(_this);
                             }
                         }
                     }
@@ -238,9 +235,9 @@ var OOSMOS;
             });
             return To;
         };
-        StateMachine.prototype.DebugPrint = function (String) {
+        StateMachine.prototype.DebugPrint = function (Message) {
             if (this.m_DebugMode) {
-                this.Print(String);
+                this.Print(Message);
             }
         };
         StateMachine.prototype.SetDebug = function (DebugMode, DebugID, MaxLinesOut, ScrollIntoView) {
@@ -259,14 +256,14 @@ var OOSMOS;
                 this.m_ScrollIntoView = ScrollIntoView || false;
             }
         };
-        StateMachine.prototype.Print = function (String) {
+        StateMachine.prototype.Print = function (Message) {
             if (!this.m_InBrowser) {
-                console.log(String);
+                console.log(Message);
                 return;
             }
             var DebugDIV = document.getElementById(this.m_DebugID);
             var TextDIV = document.createElement('div');
-            var Text = document.createTextNode(String);
+            var Text = document.createTextNode(Message);
             TextDIV.appendChild(Text);
             DebugDIV.appendChild(TextDIV);
             function IsVisible(Element) {
@@ -299,6 +296,6 @@ var OOSMOS;
     }());
     OOSMOS.StateMachine = StateMachine;
 })(OOSMOS || (OOSMOS = {}));
-if (typeof exports != 'undefined') {
+if (typeof exports !== 'undefined') {
     exports.StateMachine = OOSMOS.StateMachine;
 }
