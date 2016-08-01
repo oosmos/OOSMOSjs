@@ -22,161 +22,155 @@
 |*| SOFTWARE.
 \*/
 
-module Lib {
-interface iState {
-  ENTER?: () => void;
-  EXIT?: () => void;
-  TIMEOUT?: () => void;
-  COMPOSITE?: iComposite | (() => iComposite); 
-  //[EventString: string]: () => void;
-  // Private
-  DOTPATH?: string;
-}
-
-interface iComposite {
-  DEFAULT?: string;
-  [StateName: string]: iState | (() => iState);
-}
-
-class cOOSMOS {
-   // Principle interface
-   Transition: (To:string) => void;
-   Start: () => void;
-   IsIn: (StateDotPath:string) => boolean;
-   Event: (EventString: string) => void;
-   SetTimeoutSeconds: (TimeoutSeconds: number) => void;   
-   // Support interface
-   Restart: () => void;
-   Extend: (From:iState) => iState;
-   DebugPrint: (String:string) => void;
-   SetDebug: (DebugMode:boolean, DebugID?:string, MaxLinesOut?:number, ScrollIntoView?:boolean) => void;
-   Print: (String:string) => void;
-   Assert: (Condition:boolean, Message:string) => void;
-   Alert: (Message:string) => void;
-}
-
-export function OOSMOS(Composite : iComposite):cOOSMOS {
-  'use strict';
-
-  let m_ROOT:iState = { COMPOSITE: Composite };
-  let m_State:iState;
-  let m_Timeouts: { [StateName: string]: number; } = {};
-  let m_Interval:number;
-  let m_EventSourceState:iState;
-
-  let m_DotPath2State:{[DotStateName : string] : iState} = {};
-
-  let m_DebugMode:boolean = false;
-  let m_InBrowser:boolean = typeof(window) !== 'undefined';
-
-  if (m_InBrowser) {
-    var m_DebugID:string;
-    var m_LinesOut:number = 0;
-    var m_MaxLinesOut:number;
-    var m_ScrollIntoView:boolean;
+module OOSMOS {
+  interface iState {
+    ENTER?: () => void;
+    EXIT?: () => void;
+    TIMEOUT?: () => void;
+    COMPOSITE?: iComposite | (() => iComposite); 
+    //[EventString: string]: () => void;   // Causes TS2411 error.
+    // Private
+    DOTPATH?: string;
   }
 
-  function InstrumentStateMachine() {
-    let StateStack:string[] = [];
-
-    function InstrumentComposite(Composite:iComposite) {
-      let StateName:string;
-
-      for (StateName in Composite) {
-        if (StateName === 'DEFAULT') {
-          continue;
-        }
-
-        if (typeof(Composite[StateName]) === 'function') {
-          Composite[StateName] = (<()=>iComposite>Composite[StateName])();
-        }
-
-        InstrumentState(Composite[StateName], StateName);
-      }
-
-      //
-      // If there is only one state in the composite, set the
-      // DEFAULT so the user doesn't have to.
-      //
-      if (Object.keys(Composite).length === 1) {
-        Composite.DEFAULT = StateName;
-      }
-      else {
-        if (!Composite.DEFAULT) {
-          this.Alert('You must specify a DEFAULT if there are more than one state in the composite.');
-        }
-      }
-    }
-
-    function InstrumentState(State:iState, StateName:string) {
-      if (State.ENTER && typeof(State.ENTER) !== 'function') {
-        this.Alert('ENTER must be a function.');
-      }
-
-      if (State.EXIT && typeof(State.EXIT) !== 'function') {
-        this.Alert('EXIT must be a function.');
-      }
-
-      if (typeof(State.COMPOSITE) === 'function') {
-        State.COMPOSITE = (<()=>iComposite>State.COMPOSITE)();
-      }
-
-      StateStack.push(StateName);
-        State.DOTPATH = StateStack.join('.');
-        m_DotPath2State[State.DOTPATH] = State;
-
-        if (State.COMPOSITE) {
-          InstrumentComposite(<iComposite>State.COMPOSITE);
-        }
-      StateStack.pop();
-    }
-
-    InstrumentState(m_ROOT, 'ROOT');
-  };
-
-  function StripROOT(StateName:string) {
-    return StateName.replace('ROOT.', '');
+  interface iComposite {
+    DEFAULT?: string;
+    [StateName: string]: iState | (() => iState);
   }
 
-  function EnterDefaultStates(Composite:iComposite) {
-    m_State = Composite[Composite.DEFAULT];
+  export class StateMachine {
+    m_ROOT:iState;
+    m_State:iState;
+    m_Timeouts: { [StateName: string]: number; };
+    m_Interval:number;
+    m_EventSourceState:iState;
 
-    this.DebugPrint('==> '+StripROOT(m_State.DOTPATH));
+    m_DotPath2State:{[DotStateName : string] : iState} ;
+    m_DebugMode:boolean;
+    m_InBrowser:boolean;
 
-    if (m_State.ENTER) {
-      m_State.ENTER.call(this);
+    m_DebugID:string;
+    m_LinesOut:number = 0;
+    m_MaxLinesOut:number;
+    m_ScrollIntoView:boolean;
+
+    constructor(Composite : iComposite) {
+      this.m_ROOT = { COMPOSITE: Composite };
+      this.m_Timeouts = {};
+
+      this.m_DotPath2State= {};
+
+      this.m_DebugMode = false;
+      this.m_InBrowser = typeof(window) !== 'undefined';
+
+      if (this.m_InBrowser) {
+        this.m_DebugID;
+        this.m_LinesOut = 0;
+        this.m_MaxLinesOut;
+        this.m_ScrollIntoView;
+      }
     }
 
-    if (m_State.COMPOSITE) {
-      EnterDefaultStates.call(this, m_State.COMPOSITE);
+    private InstrumentStateMachine() {
+      let StateStack:string[] = [];
+
+      function InstrumentComposite(Composite:iComposite) {
+        let StateName:string;
+
+        for (StateName in Composite) {
+          if (StateName === 'DEFAULT') {
+            continue;
+          }
+
+          if (typeof(Composite[StateName]) === 'function') {
+            Composite[StateName] = (<()=>iComposite>Composite[StateName])();
+          }
+
+          InstrumentState.call(this, Composite[StateName], StateName);
+        }
+
+        //
+        // If there is only one state in the composite, set the
+        // DEFAULT so the user doesn't have to.
+        //
+        if (Object.keys(Composite).length === 1) {
+          Composite.DEFAULT = StateName;
+        }
+        else {
+          if (!Composite.DEFAULT) {
+            this.Alert('You must specify a DEFAULT if there are more than one state in the composite.');
+          }
+        }
+      }
+
+      function InstrumentState(State:iState, StateName:string) {
+        if (State.ENTER && typeof(State.ENTER) !== 'function') {
+          this.Alert('ENTER must be a function.');
+        }
+
+        if (State.EXIT && typeof(State.EXIT) !== 'function') {
+          this.Alert('EXIT must be a function.');
+        }
+
+        if (typeof(State.COMPOSITE) === 'function') {
+          State.COMPOSITE = (<()=>iComposite>State.COMPOSITE)();
+        }
+
+        StateStack.push(StateName);
+          State.DOTPATH = StateStack.join('.');
+          this.m_DotPath2State[State.DOTPATH] = State;
+
+          if (State.COMPOSITE) {
+            InstrumentComposite.call(this, <iComposite>State.COMPOSITE);
+          }
+        StateStack.pop();
+      }
+
+      InstrumentState.call(this, this.m_ROOT, 'ROOT');
+    };
+
+    private StripROOT(StateName:string) {
+      return StateName.replace('ROOT.', '');
     }
-  }
 
-  function CalculateLCA(StringA:string, StringB:string):string {
-    const A = StringA.split('.');
-    const B = StringB.split('.');
+    private EnterDefaultStates(Composite:iComposite) {
+      this.m_State = Composite[Composite.DEFAULT];
 
-    let Iterations = Math.min(A.length, B.length);
-    let Return:string[] = [];
+      this.DebugPrint('==> '+this.StripROOT(this.m_State.DOTPATH));
 
-    for (let I = 0; I < Iterations && A[I] === B[I]; I++) {
-      Return.push(A[I]);
+      if (this.m_State.ENTER) {
+        this.m_State.ENTER.call(this);
+      }
+
+      if (this.m_State.COMPOSITE) {
+        this.EnterDefaultStates.call(this, this.m_State.COMPOSITE);
+      }
     }
 
-    return Return.join('.');
-  }
+    private CalculateLCA(StringA:string, StringB:string):string {
+      const A = StringA.split('.');
+      const B = StringB.split('.');
 
-  return {
-    Transition: function(To) {
-      if (m_EventSourceState === undefined) {
-        m_EventSourceState = m_State;
+      let Iterations = Math.min(A.length, B.length);
+      let Return:string[] = [];
+
+      for (let I = 0; I < Iterations && A[I] === B[I]; I++) {
+        Return.push(A[I]);
+      }
+
+      return Return.join('.');
+    }
+
+    Transition(To : string) {
+      if (this.m_EventSourceState === undefined) {
+        this.m_EventSourceState = this.m_State;
       }
 
       To = 'ROOT.'+To;
 
-      this.DebugPrint('TRANSITION: '+StripROOT(m_EventSourceState.DOTPATH) + ' -> ' + StripROOT(To));
+      this.DebugPrint('TRANSITION: '+this.StripROOT(this.m_EventSourceState.DOTPATH) + ' -> ' + this.StripROOT(To));
 
-      let LCA = CalculateLCA(m_EventSourceState.DOTPATH, To);
+      let LCA = this.CalculateLCA(this.m_EventSourceState.DOTPATH, To);
 
       //
       // Self-transition is a special case.
@@ -203,12 +197,12 @@ export function OOSMOS(Composite : iComposite):cOOSMOS {
           FromArray.push(ToArray.shift());
 
           StatePath = FromArray.join('.');
-          m_State = m_DotPath2State[StatePath];
+          this.m_State = this.m_DotPath2State[StatePath];
 
-          this.DebugPrint('--> '+StripROOT(StatePath));
+          this.DebugPrint('--> '+this.StripROOT(StatePath));
 
-          if (m_State.ENTER) {
-            m_State.ENTER.apply(this, Args);
+          if (this.m_State.ENTER) {
+            this.m_State.ENTER.apply(this, Args);
           }
         } while (StatePath !== To);
       }
@@ -217,17 +211,17 @@ export function OOSMOS(Composite : iComposite):cOOSMOS {
         let FromArray = From.split('.');
 
         while (To !== From) {
-          m_State = m_DotPath2State[From];
+          this.m_State = this.m_DotPath2State[From];
 
-          this.DebugPrint('    '+StripROOT(From)+'-->');
+          this.DebugPrint('    '+this.StripROOT(From)+'-->');
 
-          if (m_State.EXIT) {
-            m_State.EXIT.call(this);
+          if (this.m_State.EXIT) {
+            this.m_State.EXIT.call(this);
           }
 
-          if (m_Timeouts[m_State.DOTPATH]) {
-            this.DebugPrint('Delete Timeout: '+m_State.DOTPATH+' '+m_Timeouts[m_State.DOTPATH]);
-            delete m_Timeouts[m_State.DOTPATH];
+          if (this.m_Timeouts[this.m_State.DOTPATH]) {
+            this.DebugPrint('Delete Timeout: '+this.m_State.DOTPATH+' '+this.m_Timeouts[this.m_State.DOTPATH]);
+            delete this.m_Timeouts[this.m_State.DOTPATH];
           }
 
           FromArray.splice(-1, 1);  // Remove last item, in place.
@@ -235,66 +229,66 @@ export function OOSMOS(Composite : iComposite):cOOSMOS {
         }
       }
 
-      ExitStates.call(this, LCA, m_State.DOTPATH);
+      ExitStates.call(this, LCA, this.m_State.DOTPATH);
       EnterStates.call(this, LCA, To);
 
-      if (m_DotPath2State[m_State.DOTPATH].COMPOSITE) {
-        EnterDefaultStates.call(this, m_DotPath2State[m_State.DOTPATH].COMPOSITE);
+      if (this.m_DotPath2State[this.m_State.DOTPATH].COMPOSITE) {
+        this.EnterDefaultStates.call(this, this.m_DotPath2State[this.m_State.DOTPATH].COMPOSITE);
       }
 
-      m_EventSourceState = undefined;
-    },
+      this.m_EventSourceState = undefined;
+    }
 
-    Start: function() {
-      InstrumentStateMachine();
-      EnterDefaultStates.call(this, m_ROOT.COMPOSITE);
-    },
+    Start() {
+      this.InstrumentStateMachine();
+      this.EnterDefaultStates.call(this, this.m_ROOT.COMPOSITE);
+    }
 
-    Restart: function() {
-      m_State            = undefined;
-      m_Timeouts         = {};
-      m_Interval         = undefined;
-      m_EventSourceState = undefined;
-      m_DotPath2State    = {};
+    Restart() {
+      this.m_State            = undefined;
+      this.m_Timeouts         = {};
+      this.m_Interval         = undefined;
+      this.m_EventSourceState = undefined;
+      this.m_DotPath2State    = {};
     
-      if (m_InBrowser) {
-        document.getElementById(m_DebugID).innerHTML = '';
-        m_LinesOut = 0;
+      if (this.m_InBrowser) {
+        document.getElementById(this.m_DebugID).innerHTML = '';
+        this.m_LinesOut = 0;
       }
     
       this.Start();
-    },
+    }
 
-    IsIn: function(StateDotPath) {
+    IsIn(StateDotPath : string) {
       StateDotPath = 'ROOT.'+StateDotPath;
 
-      if (StateDotPath === m_State.DOTPATH) {
+      if (StateDotPath === this.m_State.DOTPATH) {
         return true;
       }
 
       const Beginning = StateDotPath+'.';
 
-      return m_State.DOTPATH.substr(0, Beginning.length) === Beginning;
-    },
+      return this.m_State.DOTPATH.substr(0, Beginning.length) === Beginning;
+    }
 
-    Event: function(EventString) {
-      const CandidateStatePath = m_State.DOTPATH.split('.');
+    Event(EventString : string) {
+      const CandidateStatePath = this.m_State.DOTPATH.split('.');
 
       while (CandidateStatePath.length > 0) {
         let CandidateStateDotPath = CandidateStatePath.join('.');
-        let CandidateState = m_DotPath2State[CandidateStateDotPath];
+        let CandidateState = this.m_DotPath2State[CandidateStateDotPath];
 
         if (EventString in CandidateState) {
-          this.DebugPrint('EVENT: '+EventString+' sent to '+StripROOT(m_State.DOTPATH));
+          this.DebugPrint('EVENT: '+EventString+' sent to '+this.StripROOT(this.m_State.DOTPATH));
 
           let EventFunc = <()=>void>CandidateState[EventString];
 
           if (EventFunc) {
             let Args = Array.prototype.splice.call(arguments, 1);
 
-            m_EventSourceState = CandidateState;
+            this.m_EventSourceState = CandidateState;
               EventFunc.apply(this, Args);
-            m_EventSourceState = undefined;
+            this.m_EventSourceState = undefined;
           }
 
           return;
@@ -303,24 +297,24 @@ export function OOSMOS(Composite : iComposite):cOOSMOS {
         CandidateStatePath.splice(-1, 1); // Remove last element
       }
 
-      this.DebugPrint('EVENT: '+EventString+'. No handler from '+StripROOT(m_State.DOTPATH));
-    },
+      this.DebugPrint('EVENT: '+EventString+'. No handler from '+this.StripROOT(this.m_State.DOTPATH));
+    }
 
-    SetTimeoutSeconds: function(TimeoutSeconds) {
-      m_Timeouts[m_State.DOTPATH] = TimeoutSeconds;
+    SetTimeoutSeconds(TimeoutSeconds : number) {
+      this.m_Timeouts[this.m_State.DOTPATH] = TimeoutSeconds;
 
-      if (m_Interval === undefined) {
+      if (this.m_Interval === undefined) {
         let that = this;
 
         let IntervalTick = function () {
-          for (let StateDotPath in m_Timeouts) {
-            m_Timeouts[StateDotPath] -= 1;
+          for (let StateDotPath in that.m_Timeouts) {
+            that.m_Timeouts[StateDotPath] -= 1;
 
-            if (m_Timeouts[StateDotPath] <= 0) {
-              let State = m_DotPath2State[StateDotPath];
-              m_EventSourceState = m_State;
-              that.DebugPrint('Delete Timeout: '+m_State.DOTPATH+' '+m_Timeouts[StateDotPath]);
-              delete m_Timeouts[StateDotPath];
+            if (that.m_Timeouts[StateDotPath] <= 0) {
+              let State = that.m_DotPath2State[StateDotPath];
+              that.m_EventSourceState = that.m_State;
+              that.DebugPrint('Delete Timeout: '+that.m_State.DOTPATH+' '+that.m_Timeouts[StateDotPath]);
+              delete that.m_Timeouts[StateDotPath];
 
               if (State.TIMEOUT) {
                 State.TIMEOUT.call(that);
@@ -329,55 +323,55 @@ export function OOSMOS(Composite : iComposite):cOOSMOS {
           }
         };
 
-        m_Interval = setInterval(IntervalTick, 1000);
+        this.m_Interval = setInterval(IntervalTick, 1000);
       }
 
-      this.DebugPrint('SetTimeoutSeconds:'+m_State.DOTPATH+' '+TimeoutSeconds);
-    },
+      this.DebugPrint('SetTimeoutSeconds:'+this.m_State.DOTPATH+' '+TimeoutSeconds);
+    }
 
-    Extend: function(From: { [index: string]: iState; } ) {
-      let To:{ [index: string]: iState; } = this;
+    Extend(From: { [index: string]: iState; } ) {
+      let To = this;
 
       Object.keys(From).forEach(function(key) {
         To[key] = From[key];
       });
 
       return To;
-    },
+    }
 
-    DebugPrint: function(String) {
-      if (m_DebugMode) {
+    DebugPrint(String : string) {
+      if (this.m_DebugMode) {
         this.Print(String);
       }
-    },
+    }
 
-    SetDebug: function(DebugMode, DebugID?, MaxLinesOut?, ScrollIntoView?) {
+    SetDebug(DebugMode : boolean, DebugID? : string, MaxLinesOut? : number, ScrollIntoView? : boolean) {
       if (typeof(DebugMode) !== 'boolean') {
         this.Alert('First argument of SetDebug must be a boolean value. Defaulting to false.');
         DebugMode = false;
       }
 
-      m_DebugMode = DebugMode;
+      this.m_DebugMode = DebugMode;
 
-      if (m_InBrowser) {
+      if (this.m_InBrowser) {
         if (DebugID === undefined) {
           this.Alert('DebugID must be set to the ID of a <div> element.');
           return;
         }
 
-        m_DebugID = DebugID;
-        m_MaxLinesOut = MaxLinesOut || 200;
-        m_ScrollIntoView = ScrollIntoView || false;
+        this.m_DebugID = DebugID;
+        this.m_MaxLinesOut = MaxLinesOut || 200;
+        this.m_ScrollIntoView = ScrollIntoView || false;
       }
-    },
+    }
 
-    Print: function(String) {
-      if (!m_InBrowser) {
+    Print(String : string) {
+      if (!this.m_InBrowser) {
         console.log(String);
         return;
       }
 
-      let DebugDIV = document.getElementById(m_DebugID);
+      let DebugDIV = document.getElementById(this.m_DebugID);
       let TextDIV  = document.createElement('div');
       let Text     = document.createTextNode(String);
 
@@ -391,36 +385,35 @@ export function OOSMOS(Composite : iComposite):cOOSMOS {
         return !(Rect.bottom < 0 || Rect.top - ViewHeight >= 0);
       }
 
-      if (m_ScrollIntoView && IsVisible(DebugDIV)) {
+      if (this.m_ScrollIntoView && IsVisible(DebugDIV)) {
         TextDIV.scrollIntoView(false);
       }
 
-      m_LinesOut += 1;
+      this.m_LinesOut += 1;
 
-      if (m_LinesOut > m_MaxLinesOut) {
+      if (this.m_LinesOut > this.m_MaxLinesOut) {
         DebugDIV.removeChild(DebugDIV.childNodes[0]);
       }
-    },
+    }
 
-    Assert: function(Condition, Message) {
+    Assert(Condition : boolean, Message : string) {
       if (!Condition) {
         this.Alert(Message || 'Assertion failed');
       }
-    },
+    }
 
-    Alert: function(Message) {
-      if (m_InBrowser) {
+    Alert(Message : string) {
+      if (this.m_InBrowser) {
         window.alert(Message);
       }
       else {
         console.log(Message);
       }
     }
-  };
-}
+  }
 }
 
 declare var exports: any;
 if (typeof exports != 'undefined') {
-  exports.OOSMOS = Lib.OOSMOS;
+  exports.StateMachine = OOSMOS.StateMachine;
 }

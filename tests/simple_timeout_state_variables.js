@@ -1,6 +1,6 @@
 var OOSMOS = require('../OOSMOS.js');
 
-var TimeoutTest = OOSMOS({ DEFAULT: 'A',
+var TimeoutTest = new OOSMOS.StateMachine({ DEFAULT: 'A',
   A: function() {
     var Count = 0;
 

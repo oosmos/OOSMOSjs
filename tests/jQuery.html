@@ -106,7 +106,7 @@
 <script type="text/javascript">
 'use strict';
 
-var Demo = OOSMOS({ DEFAULT: 'Idle',
+var Demo = new OOSMOS.StateMachine({ DEFAULT: 'Idle',
   Idle: {
     ENTER: function() {
       $('#Idle').show();
