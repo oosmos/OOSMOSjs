@@ -121,12 +121,12 @@ var OOSMOS;
                 LCA = A.join('.');
             }
             var Args = Array.prototype.splice.call(arguments, 1);
-            function EnterStates(From, To) {
-                if (From === To) {
+            function EnterStates(FromState, ToState) {
+                if (FromState === ToState) {
                     return;
                 }
-                var FromArray = From.split('.');
-                var ToSuffix = To.replace(From + '.', '');
+                var FromArray = FromState.split('.');
+                var ToSuffix = ToState.replace(FromState + '.', '');
                 var ToArray = ToSuffix.split('.');
                 var StatePath;
                 do {
@@ -137,13 +137,13 @@ var OOSMOS;
                     if (this.m_State.ENTER) {
                         this.m_State.ENTER.apply(this, Args);
                     }
-                } while (StatePath !== To);
+                } while (StatePath !== ToState);
             }
-            function ExitStates(To, From) {
-                var FromArray = From.split('.');
-                while (To !== From) {
-                    this.m_State = this.m_DotPath2State[From];
-                    this.DebugPrint('    ' + this.StripROOT(From) + '-->');
+            function ExitStates(ToState, FromState) {
+                var FromArray = FromState.split('.');
+                while (ToState !== FromState) {
+                    this.m_State = this.m_DotPath2State[FromState];
+                    this.DebugPrint('    ' + this.StripROOT(FromState) + '-->');
                     if (this.m_State.EXIT) {
                         this.m_State.EXIT.call(this);
                     }
@@ -152,7 +152,7 @@ var OOSMOS;
                         delete this.m_Timeouts[this.m_State.DOTPATH];
                     }
                     FromArray.splice(-1, 1); // Remove last item, in place.
-                    From = FromArray.join('.');
+                    FromState = FromArray.join('.');
                 }
             }
             ExitStates.call(this, LCA, this.m_State.DOTPATH);

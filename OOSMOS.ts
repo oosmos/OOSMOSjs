@@ -28,20 +28,20 @@ namespace OOSMOS {
     EXIT?: () => void;
     TIMEOUT?: () => void;
     COMPOSITE?: iComposite | (() => iComposite);
-    // [EventString: string]: () => void;   // Causes TS2411 error.
+    [EventString: string]: (() => void) /* Use 'any' only to avoid assignment error. */ | any;
     // Private
     DOTPATH?: string;
   }
 
   interface iComposite {
     DEFAULT?: string;
-    [StateName: string]: iState | (() => iState);
+    [StateName: string]: iState | (() => iState) /* Use 'any' only to avoid assignment error. */ | any;
   }
 
   export class StateMachine {
     private m_ROOT: iState;
     private m_State: iState;
-    private m_Timeouts: { [StateName: string]: number; };
+    private m_Timeouts: { [StateName: string]: number };
     private m_Interval: number;
     private m_EventSourceState: iState;
     private m_DotPath2State: {[DotStateName: string]: iState} ;
@@ -179,13 +179,13 @@ namespace OOSMOS {
 
       let Args = Array.prototype.splice.call(arguments, 1);
 
-      function EnterStates(From: string, To: string) {
-        if (From === To) {
+      function EnterStates(FromState: string, ToState: string) {
+        if (FromState === ToState) {
           return;
         }
 
-        const FromArray = From.split('.');
-        const ToSuffix = To.replace(From + '.', '');
+        const FromArray = FromState.split('.');
+        const ToSuffix = ToState.replace(FromState + '.', '');
         const ToArray  = ToSuffix.split('.');
 
         let StatePath: string;
@@ -201,16 +201,16 @@ namespace OOSMOS {
           if (this.m_State.ENTER) {
             this.m_State.ENTER.apply(this, Args);
           }
-        } while (StatePath !== To);
+        } while (StatePath !== ToState);
       }
 
-      function ExitStates(To: string, From: string) {
-        let FromArray = From.split('.');
+      function ExitStates(ToState: string, FromState: string) {
+        let FromArray = FromState.split('.');
 
-        while (To !== From) {
-          this.m_State = this.m_DotPath2State[From];
+        while (ToState !== FromState) {
+          this.m_State = this.m_DotPath2State[FromState];
 
-          this.DebugPrint('    ' + this.StripROOT(From) + '-->');
+          this.DebugPrint('    ' + this.StripROOT(FromState) + '-->');
 
           if (this.m_State.EXIT) {
             this.m_State.EXIT.call(this);
@@ -222,7 +222,7 @@ namespace OOSMOS {
           }
 
           FromArray.splice(-1, 1);  // Remove last item, in place.
-          From = FromArray.join('.');
+          FromState = FromArray.join('.');
         }
       }
 

@@ -9,8 +9,10 @@
       140
     ],
 
+    "no-namespace" : false,
+
     "member-ordering": [ true,
-      "public-before-private",
+//    "public-before-private",
       "static-before-instance",
       "variables-before-functions"
     ]
