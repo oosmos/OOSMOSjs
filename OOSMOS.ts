@@ -42,7 +42,7 @@ namespace OOSMOS {
     private m_ROOT: iState;
     private m_State: iState;
     private m_Timeouts: { [StateName: string]: number };
-    private m_Interval: number;
+    private m_Interval: any;
     private m_EventSourceState: iState;
     private m_DotPath2State: {[DotStateName: string]: iState} ;
     private m_DebugMode: boolean;
