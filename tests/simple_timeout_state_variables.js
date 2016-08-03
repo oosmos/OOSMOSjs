@@ -1,4 +1,4 @@
-var OOSMOS = require('../OOSMOS.js');
+var OOSMOS = require('../dist/OOSMOS.js');
 
 var TimeoutTest = new OOSMOS.StateMachine({ DEFAULT: 'A',
   A: function() {
