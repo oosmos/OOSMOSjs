@@ -106,6 +106,10 @@ var OOSMOS;
             return Return.join('.');
         };
         StateMachine.prototype.Transition = function (To) {
+            var Args = [];
+            for (var _i = 1; _i < arguments.length; _i++) {
+                Args[_i - 1] = arguments[_i];
+            }
             if (this.m_EventSourceState === undefined) {
                 this.m_EventSourceState = this.m_State;
             }
@@ -120,7 +124,7 @@ var OOSMOS;
                 A.splice(-1, 1); // Remove last element, in place.
                 LCA = A.join('.');
             }
-            var Args = Array.prototype.splice.call(arguments, 1);
+            var ArgArray = Array.prototype.splice.call(arguments, 1);
             function EnterStates(FromState, ToState) {
                 if (FromState === ToState) {
                     return;
@@ -135,7 +139,7 @@ var OOSMOS;
                     this.m_State = this.m_DotPath2State[StatePath];
                     this.DebugPrint('--> ' + this.StripROOT(StatePath));
                     if (this.m_State.ENTER) {
-                        this.m_State.ENTER.apply(this, Args);
+                        this.m_State.ENTER.apply(this, ArgArray);
                     }
                 } while (StatePath !== ToState);
             }
@@ -187,6 +191,10 @@ var OOSMOS;
             return this.m_State.DOTPATH.substr(0, Beginning.length) === Beginning;
         };
         StateMachine.prototype.Event = function (EventString) {
+            var Args = [];
+            for (var _i = 1; _i < arguments.length; _i++) {
+                Args[_i - 1] = arguments[_i];
+            }
             var CandidateStatePath = this.m_State.DOTPATH.split('.');
             while (CandidateStatePath.length > 0) {
                 var CandidateStateDotPath = CandidateStatePath.join('.');
@@ -195,9 +203,9 @@ var OOSMOS;
                     this.DebugPrint('EVENT: ' + EventString + ' sent to ' + this.StripROOT(this.m_State.DOTPATH));
                     var EventFunc = CandidateState[EventString];
                     if (EventFunc) {
-                        var Args = Array.prototype.splice.call(arguments, 1);
+                        var ArgArray = Array.prototype.splice.call(arguments, 1);
                         this.m_EventSourceState = CandidateState;
-                        EventFunc.apply(this, Args);
+                        EventFunc.apply(this, ArgArray);
                         this.m_EventSourceState = undefined;
                     }
                     return;
@@ -227,13 +235,6 @@ var OOSMOS;
                 this.m_Interval = setInterval(IntervalTick, 1000);
             }
             this.DebugPrint('SetTimeoutSeconds:' + this.m_State.DOTPATH + ' ' + TimeoutSeconds);
-        };
-        StateMachine.prototype.Extend = function (From) {
-            var To = this;
-            Object.keys(From).forEach(function (key) {
-                To[key] = From[key];
-            });
-            return To;
         };
         StateMachine.prototype.DebugPrint = function (Message) {
             if (this.m_DebugMode) {

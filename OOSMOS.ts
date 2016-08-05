@@ -23,7 +23,7 @@
 \*/
 
 namespace OOSMOS {
-  interface iState {
+  export interface iState {
     ENTER?: () => void;
     EXIT?: () => void;
     TIMEOUT?: () => void;
@@ -33,7 +33,7 @@ namespace OOSMOS {
     DOTPATH?: string;
   }
 
-  interface iComposite {
+  export interface iComposite {
     DEFAULT?: string;
     [StateName: string]: iState | (() => iState) /* Use 'any' only to avoid assignment error. */ | any;
   }
@@ -157,7 +157,7 @@ namespace OOSMOS {
       return Return.join('.');
     }
 
-    public Transition(To: string) {
+    public Transition(To: string, ...Args: any[]) {
       if (this.m_EventSourceState === undefined) {
         this.m_EventSourceState = this.m_State;
       }
@@ -177,7 +177,7 @@ namespace OOSMOS {
         LCA = A.join('.');
       }
 
-      let Args = Array.prototype.splice.call(arguments, 1);
+      let ArgArray = Array.prototype.splice.call(arguments, 1);
 
       function EnterStates(FromState: string, ToState: string) {
         if (FromState === ToState) {
@@ -199,7 +199,7 @@ namespace OOSMOS {
           this.DebugPrint('--> ' + this.StripROOT(StatePath));
 
           if (this.m_State.ENTER) {
-            this.m_State.ENTER.apply(this, Args);
+            this.m_State.ENTER.apply(this, ArgArray);
           }
         } while (StatePath !== ToState);
       }
@@ -268,7 +268,7 @@ namespace OOSMOS {
       return this.m_State.DOTPATH.substr(0, Beginning.length) === Beginning;
     }
 
-    public Event(EventString: string) {
+    public Event(EventString: string, ...Args: any[]): void {
       const CandidateStatePath = this.m_State.DOTPATH.split('.');
 
       while (CandidateStatePath.length > 0) {
@@ -281,10 +281,10 @@ namespace OOSMOS {
           const EventFunc = <() => void> CandidateState[EventString];
 
           if (EventFunc) {
-            const Args = Array.prototype.splice.call(arguments, 1);
+            const ArgArray = Array.prototype.splice.call(arguments, 1);
 
             this.m_EventSourceState = CandidateState;
-            EventFunc.apply(this, Args);
+            EventFunc.apply(this, ArgArray);
             this.m_EventSourceState = undefined;
           }
 
@@ -322,16 +322,6 @@ namespace OOSMOS {
       }
 
       this.DebugPrint('SetTimeoutSeconds:' + this.m_State.DOTPATH + ' ' + TimeoutSeconds);
-    }
-
-    public Extend(From: { [index: string]: iState; } ) {
-      let To = this;
-
-      Object.keys(From).forEach(function(key) {
-        To[key] = From[key];
-      });
-
-      return To;
     }
 
     public DebugPrint(Message: string) {
