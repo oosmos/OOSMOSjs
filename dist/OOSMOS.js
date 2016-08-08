@@ -228,12 +228,7 @@ var StateMachine = (function () {
             console.log(Message);
             return;
         }
-        var DebugDIV_Check = document.getElementById(this.m_DebugID);
-        if (DebugDIV_Check === null) {
-            this.Alert("Debug ID '" + this.m_DebugID + "' not found.");
-            return;
-        }
-        var DebugDIV = DebugDIV_Check;
+        var DebugDIV = document.getElementById(this.m_DebugID);
         var TextDIV = document.createElement('div');
         var Text = document.createTextNode(Message);
         TextDIV.appendChild(Text);

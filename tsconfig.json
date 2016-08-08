@@ -4,7 +4,7 @@
     "module": "commonjs",
     "noImplicitAny": true,
     "noImplicitReturns": true,
-    "noImplicitThis": true,   // 2.0
+//    "noImplicitThis": true,   // 2.0
 //    "strictNullChecks": true, // 2.0
     "preserveConstEnums": true,
     "pretty": true,

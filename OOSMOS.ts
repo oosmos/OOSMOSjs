@@ -39,10 +39,10 @@ export interface iComposite {
 
 export class StateMachine {
   private m_ROOT: iState;
-  private m_State: iState | undefined;
+  private m_State: iState;
   private m_Timeouts: { [StateName: string]: number } = {};
   private m_Interval: any;
-  private m_EventSourceState: iState | undefined;
+  private m_EventSourceState: iState;
   private m_DotPath2State: {[DotStateName: string]: iState} = {};
   private m_DebugMode: boolean = false;
   private m_InBrowser: boolean = typeof(window) !== 'undefined';
@@ -59,7 +59,7 @@ export class StateMachine {
   private InstrumentStateMachine() {
     let StateStack: string[] = [];
 
-    function InstrumentComposite(this: StateMachine, Composite: iComposite) {
+    function InstrumentComposite(Composite: iComposite) {
       let StateName: string;
 
       for (StateName in Composite) {
@@ -87,7 +87,7 @@ export class StateMachine {
       }
     }
 
-    function InstrumentState(this: StateMachine, State: iState, StateName: string) {
+    function InstrumentState(State: iState, StateName: string) {
       if (State.ENTER && typeof(State.ENTER) !== 'function') {
         this.Alert('ENTER must be a function.');
       }
@@ -168,7 +168,7 @@ export class StateMachine {
 
     let ArgArray = Array.prototype.splice.call(arguments, 1);
 
-    function EnterStates(this: StateMachine, FromState: string, ToState: string) {
+    function EnterStates(FromState: string, ToState: string) {
       if (FromState === ToState) {
         return;
       }
@@ -193,7 +193,7 @@ export class StateMachine {
       } while (StatePath !== ToState);
     }
 
-    function ExitStates(this: StateMachine, ToState: string, FromState: string) {
+    function ExitStates(ToState: string, FromState: string) {
       let FromArray = FromState.split('.');
 
       while (ToState !== FromState) {
@@ -345,14 +345,7 @@ export class StateMachine {
       return;
     }
 
-    let DebugDIV_Check: HTMLElement | null = document.getElementById(this.m_DebugID);
-
-    if (DebugDIV_Check === null) {
-      this.Alert("Debug ID '"+this.m_DebugID+"' not found.");
-      return;
-    }
-
-    const DebugDIV = DebugDIV_Check;
+    const DebugDIV = document.getElementById(this.m_DebugID);
     const TextDIV  = document.createElement('div');
     const Text     = document.createTextNode(Message);
 
