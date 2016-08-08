@@ -1,26 +1,3 @@
-/*\
-|*| The MIT License (MIT)
-|*|
-|*| Copyright (c) 2016 Mark J Glenn and OOSMOS, LLC
-|*|
-|*| Permission is hereby granted, free of charge, to any person obtaining a copy
-|*| of this software and associated documentation files (the "Software"), to deal
-|*| in the Software without restriction, including without limitation the rights
-|*| to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-|*| copies of the Software, and to permit persons to whom the Software is
-|*| furnished to do so, subject to the following conditions:
-|*|
-|*| The above copyright notice and this permission notice shall be included in all
-|*| copies or substantial portions of the Software.
-|*|
-|*| THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-|*| IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-|*| FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-|*| AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-|*| LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-|*| OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-|*| SOFTWARE.
-\*/
 "use strict";
 var StateMachine = (function () {
     function StateMachine(Composite) {
@@ -44,12 +21,8 @@ var StateMachine = (function () {
                 }
                 InstrumentState.call(this, Composite[StateName], StateName);
             }
-            //
-            // If there is only one state in the composite, set the
-            // DEFAULT so the user doesn't have to.
-            //
             if (Object.keys(Composite).length === 1) {
-                Composite.DEFAULT = StateName;
+                Composite.DEFAULT = Object.keys(Composite)[0];
             }
             else {
                 if (!Composite.DEFAULT) {
@@ -112,12 +85,9 @@ var StateMachine = (function () {
         To = 'ROOT.' + To;
         this.DebugPrint('TRANSITION: ' + this.StripROOT(this.m_EventSourceState.DOTPATH) + ' -> ' + this.StripROOT(To));
         var LCA = this.CalculateLCA(this.m_EventSourceState.DOTPATH, To);
-        //
-        // Self-transition is a special case.
-        //
         if (To === LCA) {
             var A = LCA.split('.');
-            A.splice(-1, 1); // Remove last element, in place.
+            A.splice(-1, 1);
             LCA = A.join('.');
         }
         var ArgArray = Array.prototype.splice.call(arguments, 1);
@@ -151,7 +121,7 @@ var StateMachine = (function () {
                     this.DebugPrint('Delete Timeout: ' + this.m_State.DOTPATH + ' ' + this.m_Timeouts[this.m_State.DOTPATH]);
                     delete this.m_Timeouts[this.m_State.DOTPATH];
                 }
-                FromArray.splice(-1, 1); // Remove last item, in place.
+                FromArray.splice(-1, 1);
                 FromState = FromArray.join('.');
             }
         }
@@ -167,10 +137,10 @@ var StateMachine = (function () {
         this.EnterDefaultStates.call(this, this.m_ROOT.COMPOSITE);
     };
     StateMachine.prototype.Restart = function () {
-        this.m_State = undefined;
+        this.m_State = {};
         this.m_Timeouts = {};
         this.m_Interval = undefined;
-        this.m_EventSourceState = undefined;
+        this.m_EventSourceState = {};
         this.m_DotPath2State = {};
         if (this.m_InBrowser) {
             document.getElementById(this.m_DebugID).innerHTML = '';
@@ -206,7 +176,7 @@ var StateMachine = (function () {
                 }
                 return;
             }
-            CandidateStatePath.splice(-1, 1); // Remove last element
+            CandidateStatePath.splice(-1, 1);
         }
         this.DebugPrint('EVENT: ' + EventString + '. No handler from ' + this.StripROOT(this.m_State.DOTPATH));
     };
@@ -258,7 +228,12 @@ var StateMachine = (function () {
             console.log(Message);
             return;
         }
-        var DebugDIV = document.getElementById(this.m_DebugID);
+        var DebugDIV_Check = document.getElementById(this.m_DebugID);
+        if (DebugDIV_Check === null) {
+            this.Alert("Debug ID '" + this.m_DebugID + "' not found.");
+            return;
+        }
+        var DebugDIV = DebugDIV_Check;
         var TextDIV = document.createElement('div');
         var Text = document.createTextNode(Message);
         TextDIV.appendChild(Text);

@@ -49,7 +49,7 @@ var StateMachine = (function () {
             // DEFAULT so the user doesn't have to.
             //
             if (Object.keys(Composite).length === 1) {
-                Composite.DEFAULT = StateName;
+                Composite.DEFAULT = Object.keys(Composite)[0];
             }
             else {
                 if (!Composite.DEFAULT) {
@@ -167,10 +167,10 @@ var StateMachine = (function () {
         this.EnterDefaultStates.call(this, this.m_ROOT.COMPOSITE);
     };
     StateMachine.prototype.Restart = function () {
-        this.m_State = undefined;
+        this.m_State = {};
         this.m_Timeouts = {};
         this.m_Interval = undefined;
-        this.m_EventSourceState = undefined;
+        this.m_EventSourceState = {};
         this.m_DotPath2State = {};
         if (this.m_InBrowser) {
             document.getElementById(this.m_DebugID).innerHTML = '';
@@ -258,7 +258,12 @@ var StateMachine = (function () {
             console.log(Message);
             return;
         }
-        var DebugDIV = document.getElementById(this.m_DebugID);
+        var DebugDIV_Check = document.getElementById(this.m_DebugID);
+        if (DebugDIV_Check === null) {
+            this.Alert("Debug ID '" + this.m_DebugID + "' not found.");
+            return;
+        }
+        var DebugDIV = DebugDIV_Check;
         var TextDIV = document.createElement('div');
         var Text = document.createTextNode(Message);
         TextDIV.appendChild(Text);

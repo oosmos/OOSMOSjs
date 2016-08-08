@@ -39,10 +39,10 @@ export interface iComposite {
 
 export class StateMachine {
   private m_ROOT: iState;
-  private m_State: iState;
+  private m_State: iState | undefined;
   private m_Timeouts: { [StateName: string]: number } = {};
   private m_Interval: any;
-  private m_EventSourceState: iState;
+  private m_EventSourceState: iState | undefined;
   private m_DotPath2State: {[DotStateName: string]: iState} = {};
   private m_DebugMode: boolean = false;
   private m_InBrowser: boolean = typeof(window) !== 'undefined';
@@ -59,7 +59,7 @@ export class StateMachine {
   private InstrumentStateMachine() {
     let StateStack: string[] = [];
 
-    function InstrumentComposite(Composite: iComposite) {
+    function InstrumentComposite(this: StateMachine, Composite: iComposite) {
       let StateName: string;
 
       for (StateName in Composite) {
@@ -79,7 +79,7 @@ export class StateMachine {
       // DEFAULT so the user doesn't have to.
       //
       if (Object.keys(Composite).length === 1) {
-        Composite.DEFAULT = StateName;
+        Composite.DEFAULT = Object.keys(Composite)[0];
       } else {
         if (!Composite.DEFAULT) {
           this.Alert('You must specify a DEFAULT if there are more than one state in the composite.');
@@ -87,7 +87,7 @@ export class StateMachine {
       }
     }
 
-    function InstrumentState(State: iState, StateName: string) {
+    function InstrumentState(this: StateMachine, State: iState, StateName: string) {
       if (State.ENTER && typeof(State.ENTER) !== 'function') {
         this.Alert('ENTER must be a function.');
       }
@@ -162,13 +162,13 @@ export class StateMachine {
     //
     if (To === LCA) {
       let A = LCA.split('.');
-      A.splice(-1, 1); // Remove last element, in place.
+      A.splice(-1, 1); // Remove last element, in place. 
       LCA = A.join('.');
     }
 
     let ArgArray = Array.prototype.splice.call(arguments, 1);
 
-    function EnterStates(FromState: string, ToState: string) {
+    function EnterStates(this: StateMachine, FromState: string, ToState: string) {
       if (FromState === ToState) {
         return;
       }
@@ -193,7 +193,7 @@ export class StateMachine {
       } while (StatePath !== ToState);
     }
 
-    function ExitStates(ToState: string, FromState: string) {
+    function ExitStates(this: StateMachine, ToState: string, FromState: string) {
       let FromArray = FromState.split('.');
 
       while (ToState !== FromState) {
@@ -229,12 +229,12 @@ export class StateMachine {
     this.InstrumentStateMachine();
     this.EnterDefaultStates.call(this, this.m_ROOT.COMPOSITE);
   }
-
+  
   public Restart() {
-    this.m_State            = undefined;
+    this.m_State            = {};
     this.m_Timeouts         = {};
     this.m_Interval         = undefined;
-    this.m_EventSourceState = undefined;
+    this.m_EventSourceState = {};
     this.m_DotPath2State    = {};
 
     if (this.m_InBrowser) {
@@ -248,7 +248,7 @@ export class StateMachine {
   public IsIn(StateDotPath: string) {
     StateDotPath = 'ROOT.' + StateDotPath;
 
-    if (StateDotPath === this.m_State.DOTPATH) {
+    if (StateDotPath === this.m_State.DOTPATH) { 
       return true;
     }
 
@@ -345,7 +345,14 @@ export class StateMachine {
       return;
     }
 
-    const DebugDIV = document.getElementById(this.m_DebugID);
+    let DebugDIV_Check: HTMLElement | null = document.getElementById(this.m_DebugID);
+
+    if (DebugDIV_Check === null) {
+      this.Alert("Debug ID '"+this.m_DebugID+"' not found.");
+      return;
+    }
+
+    const DebugDIV = DebugDIV_Check;
     const TextDIV  = document.createElement('div');
     const Text     = document.createTextNode(Message);
 

@@ -4,9 +4,14 @@
     "module": "commonjs",
     "noImplicitAny": true,
     "noImplicitReturns": true,
+    "noImplicitThis": true,   // 2.0
+//    "strictNullChecks": true, // 2.0
+    "preserveConstEnums": true,
+    "pretty": true,
     "noFallthroughCasesInSwitch":true,
     "sourceMap": false,
     "declaration": true,
+    "removeComments" : true,
     "outDir": "./dist/"
   },
   "files" : [

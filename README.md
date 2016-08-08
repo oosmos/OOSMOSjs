@@ -7,7 +7,7 @@ Live Demo: [OOSMOS.ts](https://oosmos.com/OOSMOSjs)
 ### Features
 
 - Very readable encapsulated state machine structure.
-- Simple, about 300 lines of code of JavaScript.
+- Simple, about 300 lines of code of post-transpiled JavaScript.
 - Runs in a browser or `Node.js`.
 - Supports arbitrarily deep hierarchical state machines.
 - Supports state local variables. (Ideal for caching `jQuery` elements.)
@@ -69,33 +69,39 @@ In lines 8 and 18 we use the `OOSMOS` `Print()` API to display progress.
 This is the basic layout of an `OOSMOS` state machine, explained below.
 
 ```javascript
-var StateMachine = OOSMOS({ DEFAULT: 'StateName',
-  StateName: {
-    ENTER: function() {
-      this.SetTimeoutSeconds(4);
-    },
-    EXIT: function() {
-    },
-    TIMEOUT: function() {
-    },
-    EventName: function() {
-      this.Transition('StateName');
-    },
-    'Event-String': function() {
-    }
-  },
-  StateName: {
-    EventName: function() {
-    },
-    EventName: function() {
-    },
-    COMPOSITE: { DEFAULT: 'StateName',
-      StateName: {
-        EventName: function() {
-        }
-      }
-    }
-  }
+import { StateMachine } from '../OOSMOS';
+
+class TimeoutTest extends StateMachine {
+  constructor() {
+    super({ DEFAULT: 'StateName',
+	  StateName: {
+	    ENTER: function() {
+	      this.SetTimeoutSeconds(4);
+	    },
+	    EXIT: function() {
+	    },
+	    TIMEOUT: function() {
+	    },
+	    EventName: function() {
+	      this.Transition('StateName');
+	    },
+	    'Event-String': function() {
+	    },
+	  },
+	  StateName: {
+	    EventName: function() {
+	    },
+	    EventName: function() {
+	    },
+	    COMPOSITE: { DEFAULT: 'StateName',
+	      StateName: {
+	        EventName: function() {
+	        }
+	      },
+	    },
+	  },
+    });
+  }     
 });
 
 StateMachine.Start();
@@ -155,22 +161,22 @@ Each state must (eventually) specify an object of events.  See state `A`, below.
 
 
 ```javascript
-var TimeoutDemo = OOSMOS({ DEFAULT: 'A',
+var OOSMOS = require('./built/OOSMOS.js');
+
+var TimeoutDemo = new OOSMOS.StateMachine({ DEFAULT: 'A',
   A: {
     ENTER: function() {
       this.SetTimeoutSeconds(4);
     },
     TIMEOUT: function() {
       this.Transition('B');
-    } 
+    }
   },
   B: function() {
     var Timeouts = 0;
-    var $Foo = $('#Foo');
 
     return {
       ENTER: function() {
-        $Foo.text('bar');
         this.SetTimeoutSeconds(1);
       },
       TIMEOUT: function() {
@@ -178,9 +184,10 @@ var TimeoutDemo = OOSMOS({ DEFAULT: 'A',
         this.Transition('A');
       }
     };
-  }  
+  }
 });
 
+TimeoutDemo.SetDebug(true);
 TimeoutDemo.Start();
 ```
 
