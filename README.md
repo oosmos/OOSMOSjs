@@ -2,7 +2,7 @@
 
 OOSMOS for TypeScript is an open source, easy-to-use hierarchical state machine class.
 
-Live Demo: [OOSMOS.ts](https://oosmos.com/OOSMOSjs)
+Live Demo: [OOSMOS.ts](https://oosmos.com/OOSMOSts)
 
 ### Features
 
