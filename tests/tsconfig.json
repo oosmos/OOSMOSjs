@@ -6,10 +6,11 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch":true,
     "sourceMap": false,
-    "declaration": true,
-    "outDir": "./dist/"
+    "outDir": "built/"
   },
   "files" : [
-    "OOSMOS.ts"
+    "simple_timeout.ts",
+    "nested_timeout.ts",
+    "simple_timeout_state_variables.ts"
   ]
 }

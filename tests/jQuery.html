@@ -31,7 +31,10 @@
 
 <script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
 
-<script src="../dist/OOSMOS.js" type="text/javascript"></script>
+<script type="text/javascript">
+  var exports = {};  // OOSMOS will assign to exports.
+</script>
+<script src="built/OOSMOS.js" type="text/javascript"></script>
 
 <style>
     .Debug {
@@ -106,7 +109,7 @@
 <script type="text/javascript">
 'use strict';
 
-var Demo = new OOSMOS.StateMachine({ DEFAULT: 'Idle',
+var Demo = new StateMachine({ DEFAULT: 'Idle',
   Idle: {
     ENTER: function() {
       $('#Idle').show();

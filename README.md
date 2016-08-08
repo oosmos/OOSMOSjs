@@ -1,19 +1,18 @@
-## OOSMOS.js --  A Hierarchical State Machine Framework for JavaScript.
+## OOSMOS.ts --  A Hierarchical State Machine for TypeScript.
 
-OOSMOS for JavaScript is an open source, easy-to-use hierarchical state machine framework comprised of a single object, called OOSMOS, housed in the file `OOSMOS.js`.
+OOSMOS for TypeScript is an open source, easy-to-use hierarchical state machine class.
 
-Live Demo: [OOSMOSjs](https://oosmos.com/OOSMOSjs)
+Live Demo: [OOSMOS.ts](https://oosmos.com/OOSMOSjs)
 
 ### Features
 
 - Very readable encapsulated state machine structure.
-- Simple, less than 400 lines of code.
-- Same code runs in a browser or `Node.js`.
+- Simple, about 300 lines of code of JavaScript.
+- Runs in a browser or `Node.js`.
 - Supports arbitrarily deep hierarchical state machines.
 - Supports state local variables. (Ideal for caching `jQuery` elements.)
 - Simple API: Only 5 principal APIs.
 - Can run multiple state machines concurrently.
-- Can inherit any `OOSMOS` state machine without using the JavaScript prototype mechanism.  (See the **Inheritance** example below.)
 - Events can pass arguments into the state entry function via transitions.
 
 _Note: OOSMOS stands for **O**bject **O**riented **S**tate **M**achine **O**perating **S**ystem.  OOSMOS is a small footprint C/C++ state machine operating system for the industrial IOT space.  (See [www.oosmos.com](http://www.oosmos.com).) This JavaScript implementation borrows from the Object-Oriented and 
@@ -21,39 +20,48 @@ State Machine elements of OOSMOS but the Operating System elements are supported
 
 ### Example
 
-We'll use `OOSMOS.js` to implement a simple state machine that toggles between states `A` and `B` with timeouts as represented in this state chart.
+We'll use `OOSMOS.ts` to implement a simple state machine that toggles between states `A` and `B` with timeouts as represented in this state chart.
 
 ![](http://www.oosmos.com/github/README.md/simple_timeout.svg)
 
-The entire implementation is below.  In lines 1 through 20, we create a state machine called `TimeoutDemo`.  State `A` starts on line 2 and state `B` starts on line 11 and look very similar.  State `A` implements an `ENTER` event that establishes a timeout of `4` seconds.  When the timeout expires, the `TIMEOUT` function will be executed which transitions to state `B`.  State `B` essentially does the same thing as state `A` except that it times out in `1` second.
+The entire implementation is below.  In lines 3 through 27, we create a state machine called `TimeoutDemo`.  State `A` starts on line 6 and state `B` starts on line 16 and look very similar.  State `A` implements an `ENTER` event that establishes a timeout of `4` seconds.  When the timeout expires, the `TIMEOUT` function will be executed which transitions to state `B`.  State `B` essentially does the same thing as state `A` except that it times out in `1` second.
 
-Line 22 starts the state machine.
+Line 31 starts the state machine.
 
-In lines 4 and 13 we use the `OOSMOS` `Print()` API to display progress.
+In lines 8 and 18 we use the `OOSMOS` `Print()` API to display progress.
 
 ```javascript
- 1  var TimeoutDemo = OOSMOS({ DEFAULT: 'A',
- 2    A: {
- 3      ENTER: function() {
- 4        this.Print("In state A");
- 5        this.SetTimeoutSeconds(4);
- 6      },
- 7      TIMEOUT: function() {
- 8        this.Transition('B');
- 9      } 
-10    },
-11    B: {
-12      ENTER: function() {
-13        this.Print("In state B");
-14        this.SetTimeoutSeconds(1);
-15      },
-16      TIMEOUT: function() {
-17        this.Transition('A');
-18      }
-19    }  
-20 });
-21
-22 TimeoutDemo.Start();
+1  import { StateMachine } from '../OOSMOS';
+2
+3  class TimeoutTest extends StateMachine {
+4    constructor() {
+5      super({ DEFAULT: 'A',
+6        A: {
+7          ENTER: function() {
+8            this.Print("In state A");
+9            this.SetTimeoutSeconds(4);
+10         },
+11         TIMEOUT: function() {
+12           this.Transition('B');
+13         },
+14       },
+15
+16       B: {
+17         ENTER: function() {
+18           this.Print("In state B");
+19           this.SetTimeoutSeconds(1);
+20         },
+21         TIMEOUT: function() {
+22           this.Transition('A');
+23         },
+24       },
+25     });
+26   }
+27 }
+28
+29 const pTimeoutTest = new TimeoutTest();
+30 pTimeoutTest.SetDebug(true);
+31 pTimeoutTest.Start();
 ```
 
 ### State Machine Structure Overview
@@ -119,7 +127,6 @@ StateMachine.Start();
 |`Alert(Message)`|When running under `Node.js`, executes a `console.log()` call.<br><br>In a browser, executes a `window.alert()` call.|
 |`Assert(Condition, String)`|Calls the `Alert(String)` function if `Condition` is not met.|
 |`DebugPrint(String)`|Executes a `Print(String)` if debug mode is on.  See `SetDebug`.|
-|`Extend(Derived)`|Adds the object properties from the `Derived` object into the `OOSMOS` state machine object.  (See Inheritance example below.) |
 |`Print(String)`|When running under `Node.js`, executes a `console.log(String)`.<br><br>When running in a browser, requires an ID of a `<div>` element into which to write the string, specified in the `SetDebug` call). |
 |`Restart`|Re-initializes the state machine as if run for the first time. Principally used for testing.|
 |`SetDebug(DebugMode [, DebugID [, MaxLines [, ScrollIntoView]]])`|Pass a `DebugMode` of `true` to enable debug mode, `false` otherwise.<br><br>The next three arguments apply only when running under a browser.<br><br>Required `DebugID` specifies the  `id` of a `<div>` element into which debug lines will be written.<br><br>Optional `MaxLines` specifies the maximum number of lines that are retained in the `<div>`.  *Note that most browsers slow down considerably due to inefficient scrolling if there are too many lines retained in the `<div>`.  Defaults to 200.*<br><br>If `true`, optional `ScrollIntoView` causes each new debug line to come into focus.|
@@ -177,30 +184,6 @@ var TimeoutDemo = OOSMOS({ DEFAULT: 'A',
 TimeoutDemo.Start();
 ```
 
-### Inheritance
-
-You can add your own interface to an `OOSMOS` state machine using the `OOSMOS` `Extend()` API, like this.
-
-```javascript
-var MyExtendedStateMachine = (function() {
-  var m_MyMemberVariableA;
-  var m_MyMemberVariableB;
-
-  var MyStateMachine = OOSMOS({ 
-    ... your OOSMOS state machine implemenation ... 
-  });
-
-  return MyStateMachine.Extend({
-    MyNewMemberFunctionA: function() {
-      return m_MyMemberVariableA;
-    },
-    MyNewMemberFunctionB: function() {
-      return m_MyMemberVariableB;
-    }
-  };
-}());    
-```
-
 ### jQuery Example (fragments)
 
 Note that we can establish `jQuery` event handlers in the `ENTER` event and then `unbind` them in the corresponding `EXIT` event.  
@@ -214,9 +197,8 @@ Also note that, because the `jQuery` `click` event is executed under a different
     ENTER: function() {
       $('#Active').show();
 
-      var that = this;
-      $('#eStop').click(function()    { that.Transition('Idle');   });
-      $('#eRestart').click(function() { that.Transition('Active'); });
+      $('#eStop').click(()     => { this.Transition('Idle');   });
+      $('#eRestart').click(f() => { this.Transition('Active'); });
     },
 
     EXIT: function() {
@@ -244,9 +226,8 @@ Further, we can use state-local variables to cache the `jQuery` selectors, like 
       ENTER: function() {
         $Active.show();
 
-        var that = this;
-        $('#eStop').click(function()    { that.Transition('Idle');   });
-        $('#eRestart').click(function() { that.Transition('Active'); });
+        $('#eStop').click(()     => { this.Transition('Idle');   });
+        $('#eRestart').click(f() => { this.Transition('Active'); });
       },
 
       EXIT: function() {

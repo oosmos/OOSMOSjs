@@ -1,4 +1,4 @@
-`OOSMOS.js` is licensed under the MIT License.
+`OOSMOS.ts` islicensed under the MIT License.
 
 > **The MIT License**
 >

@@ -1,4 +1,4 @@
-export interface iState {
+interface iState {
     ENTER?: () => void;
     EXIT?: () => void;
     TIMEOUT?: () => void;
@@ -6,11 +6,11 @@ export interface iState {
     [EventString: string]: (() => void) | any;
     DOTPATH?: string;
 }
-export interface iComposite {
+interface iComposite {
     DEFAULT?: string;
     [StateName: string]: iState | (() => iState) | any;
 }
-export declare class StateMachine {
+declare class StateMachine {
     private m_ROOT;
     private m_State;
     private m_Timeouts;
