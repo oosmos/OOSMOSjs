@@ -29,13 +29,6 @@
 <meta charset="utf-8">
 <title>OOSMOS.js Hierarchical State Machine Demo</title>
 
-<script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
-
-<script type="text/javascript">
-  var exports = {};  // OOSMOS will assign to exports.
-</script>
-<script src="built/OOSMOS.js" type="text/javascript"></script>
-
 <style>
     .Debug {
       float:left;
@@ -107,115 +100,11 @@
 </div>
 
 <script type="text/javascript">
-'use strict';
-
-var Demo = new StateMachine({ DEFAULT: 'Idle',
-  Idle: {
-    ENTER: function() {
-      $('#Idle').show();
-
-      var that = this;
-      $('#eStart').click(function() { that.Transition('Active'); });
-    },
-
-    EXIT: function() {
-      $('#eStart').unbind('click');
-
-      $('#Idle').hide();
-    }
-  },
-
-  Active: {
-    ENTER: function() {
-      $('#Active').show();
-
-      var that = this;
-      $('#eStop').click(function()    { that.Transition('Idle');   });
-      $('#eRestart').click(function() { that.Transition('Active'); });
-    },
-
-    EXIT: function() {
-      $('#eStop').unbind('click');
-      $('#eRestart').unbind('click');
-
-      $('#Active').hide();
-    },
-
-    COMPOSITE: { DEFAULT: 'A',
-      A: function() {
-        var $A = $('#A');
-        var $AA = $('#AA');
-
-        return {
-          ENTER: function() {
-            $A.show();
-  
-            var that = this;
-            $('#eA2B').click(function()  { that.Transition('Active.B');    });
-            $('#eA2BB').click(function() { that.Transition('Active.B.BB'); });
-          },
-  
-          EXIT: function() {
-            $('#eA2B').unbind('click');
-            $('#eA2BB').unbind('click');
-  
-            $A.hide();
-          },
-
-          COMPOSITE: {
-            AA: {
-              ENTER: function() {
-                $AA.show();
-  
-                var that = this;
-                $('#eAA2B').click(function()  { that.Transition('Active.B');    });
-                $('#eAA2BB').click(function() { that.Transition('Active.B.BB'); });
-              },
-      
-              EXIT: function() {
-                $('#eAA2B').unbind('click');
-                $('#eAA2BB').unbind('click');
-  
-                $AA.hide();
-              }
-            }
-          }
-        };
-      },
-
-      B: function() {
-        var $B  = $('#B');
-        var $BB = $('#BB');
-
-        return {
-          ENTER: function() {
-            $B.show();
-          },
-  
-          EXIT: function() {
-            $B.hide();
-          },
-  
-          COMPOSITE: {
-            BB: {
-              ENTER: function() {
-                $BB.show();
-              },
-  
-              EXIT: function() {
-                $BB.hide();
-              }
-            }
-          }
-        };
-      }
-    }
-  }
-});
-
-Demo.SetDebug(true, 'debugTest');
-Demo.Start();
-
+  var exports = {};  // OOSMOS will assign to exports.
 </script>
+<script src="dist/OOSMOS.js" type="text/javascript"></script>
+
+<script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
+<script src="dist/tests/jQueryDemo.js" type="text/javascript"></script>
 </body>
 </html>

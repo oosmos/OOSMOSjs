@@ -29,10 +29,7 @@
 <meta charset="utf-8">
 <title>OOSMOS.js Finite State Machine Demo</title>
 
-<script type="text/javascript">
-  var exports = {};  // OOSMOS will assign to exports.
-</script>
-<script src="built/OOSMOS.js" type="text/javascript"></script>
+
 
 <style>
 .Debug {
@@ -56,38 +53,19 @@
 
 <div style="clear:both;margin:20px 0"></div>
 <div id="debugFSM" class="Debug"></div>
+
 <script type="text/javascript">
-
-var TimeoutTest = new StateMachine({ DEFAULT: 'A',
-  A: function() {
-      var Count = 0;
-
-      return {
-        ENTER: function() {
-          Count += 1;
-          this.Print("In state A, Count = "+Count);
-          this.SetTimeoutSeconds(4);
-        },
-        TIMEOUT: function() {
-          this.Transition('B');
-        }
-      };
-    },
-
-  B: {
-    ENTER: function() {
-      this.Print("In state B");
-      this.SetTimeoutSeconds(1);
-    },
-    TIMEOUT: function() {
-      this.Transition('A');
-    }
-  }
-});
-
-TimeoutTest.SetDebug(true, 'debugFSM');
-TimeoutTest.Start();
-
+  var exports = {};  // OOSMOS will assign to exports.
 </script>
+<script src="dist/OOSMOS.js" type="text/javascript"></script>
+
+<script src="dist/tests/SimpleTimeoutDemo.js" type="text/javascript" ></script>
+<script type="text/javascript">
+  const pTimeoutTest = new TimeoutTest();
+  pTimeoutTest.SetDebug(true, 'debugFSM');
+  pTimeoutTest.Start();
+</script>
+
+
 </body>
 </html>

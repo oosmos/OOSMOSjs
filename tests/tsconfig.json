@@ -6,11 +6,13 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch":true,
     "sourceMap": false,
-    "outDir": "built/"
+    "outDir": "./dist/"
   },
   "files" : [
     "simple_timeout.ts",
     "nested_timeout.ts",
-    "simple_timeout_state_variables.ts"
+    "simple_timeout_state_variables.ts",
+    "jQueryDemo.ts",
+    "SimpleTimeoutDemo.ts"
   ]
 }

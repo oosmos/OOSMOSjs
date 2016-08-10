@@ -7,7 +7,7 @@ Live Demo: [OOSMOS.ts](https://oosmos.com/OOSMOSts)
 ### Features
 
 - Very readable encapsulated state machine structure.
-- Simple, about 300 lines of code of post-transpiled JavaScript.
+- Simple. Less than 300 lines of code of post-transpiled JavaScript.
 - Runs in a browser or `Node.js`.
 - Supports arbitrarily deep hierarchical state machines.
 - Supports state local variables. (Ideal for caching `jQuery` elements.)
@@ -23,6 +23,8 @@ State Machine elements of OOSMOS but the Operating System elements are supported
 We'll use `OOSMOS.ts` to implement a simple state machine that toggles between states `A` and `B` with timeouts as represented in this state chart.
 
 ![](http://www.oosmos.com/github/README.md/simple_timeout.svg)
+
+_Note that we use UMLet to draw state machines.  ([www.umlet.com](http://www.umlet.com/)).  State machines are easy to draw, can export as `.SVG` files, and the tool is open source._
 
 The entire implementation is below.  In lines 3 through 27, we create a state machine called `TimeoutDemo`.  State `A` starts on line 6 and state `B` starts on line 16 and look very similar.  State `A` implements an `ENTER` event that establishes a timeout of `4` seconds.  When the timeout expires, the `TIMEOUT` function will be executed which transitions to state `B`.  State `B` essentially does the same thing as state `A` except that it times out in `1` second.
 
@@ -121,7 +123,7 @@ StateMachine.Start();
 |API|Description|
 |---|---|
 |`Event('Event', [, arguments...])`|Generates an event.  If the current state does not handle the event, it is propagated up the hierarchy until a state does handle it.  If no active state handles the event, then the event has no effect.<br><br>Any supplied arguments are passed to the appropriate event handler function.|
-|`IsIn('dot.qualified.statename'`)|Returns `true` if the specified dot-qualified state is active.<br><br>If state `A.AA.AAA` is the current leaf state, then `IsIn` of `'A'`, `'A.AA'` and `'A.AA.AAA'` will all return `true`.<br><br>Note that if your state machine is not hierarchical, i.e., it does not use the `COMPOSITE` keyword, then none of your state names will contain a "dot" character.|
+|`IsIn('dot.qualified.statename'`)|Returns `true` if the specified dot-qualified state is active.<br><br>For example, if state `A.AA.AAA` is the current leaf state, then `IsIn` of `'A'`, `'A.AA'` and `'A.AA.AAA'` will all return `true`.<br><br>Note that if your state machine is not hierarchical, i.e., it does not use the `COMPOSITE` keyword, then none of your state names will contain a "dot" character.|
 |`SetTimeoutSeconds(Seconds)`|Establish a timeout for this state.<br><br>Multiple, nested timeouts can all be active at once.|
 |`Start()`|Starts the state machine.|
 |`Transition('dot.qualified.statename' [, arguments...])`|Transitions from one state to another.<br><br>Must be called from within an event function.  Any supplied arguments are passed to the `ENTER` function of the target state.|
@@ -154,6 +156,38 @@ StateMachine.Start();
 |---|---|
 |`DEFAULT`|Specified by you inside of a `COMPOSITE` to indicate which of multiple states at the same level should be entered by default.<br><br>Not required if there is only one state in the composite.|
 
+### OOSMOS.d.ts
+
+(Private elements removed.)
+
+```
+export interface iState {
+    ENTER?: () => void;
+    EXIT?: () => void;
+    TIMEOUT?: () => void;
+    COMPOSITE?: iComposite | (() => iComposite);
+    [EventString: string]: (() => void) | any;
+    DOTPATH?: string;
+}
+export interface iComposite {
+    DEFAULT?: string;
+    [StateName: string]: iState | (() => iState) | any;
+}
+export declare class StateMachine {
+    constructor(Composite: iComposite);
+    Transition(To: string, ...Args: any[]): void;
+    Start(): void;
+    Restart(): void;
+    IsIn(StateDotPath: string): boolean;
+    Event(EventString: string, ...Args: any[]): void;
+    SetTimeoutSeconds(TimeoutSeconds: number): void;
+    DebugPrint(Message: string): void;
+    SetDebug(DebugMode: boolean, DebugID?: string, MaxLinesOut?: number, ScrollIntoView?: boolean): void;
+    Print(Message: string): void;
+    Assert(Condition: boolean, Message: string): void;
+    Alert(Message: string): void;
+}
+```
 
 ### State Local Variables
 
@@ -161,41 +195,44 @@ Each state must (eventually) specify an object of events.  See state `A`, below.
 
 
 ```javascript
-var OOSMOS = require('./built/OOSMOS.js');
+import { StateMachine } from '../OOSMOS';
 
-var TimeoutDemo = new OOSMOS.StateMachine({ DEFAULT: 'A',
-  A: {
-    ENTER: function() {
-      this.SetTimeoutSeconds(4);
-    },
-    TIMEOUT: function() {
-      this.Transition('B');
-    }
-  },
-  B: function() {
-    var Timeouts = 0;
-
-    return {
-      ENTER: function() {
-        this.SetTimeoutSeconds(1);
+class TimeoutDemo extends StateMachine {
+  constructor() {
+    super({ DEFAULT: 'A',
+      A: {
+        ENTER: function() {
+          this.SetTimeoutSeconds(4);
+        },
+        TIMEOUT: function() {
+          this.Transition('B');
+        },
       },
-      TIMEOUT: function() {
-        Timeouts += 1;
-        this.Transition('A');
-      }
-    };
-  }
-});
+      B: function() {
+        var Timeouts = 0;
 
-TimeoutDemo.SetDebug(true);
-TimeoutDemo.Start();
+        return {
+          ENTER: function() {
+            this.SetTimeoutSeconds(1);
+          },
+          TIMEOUT: function() {
+            Timeouts += 1;
+            this.Transition('A');
+          },
+        };
+      },
+    });
+  }
+}
+
+const pTimeoutDemo = new TimeoutDemo();
+pTimeoutDemo.SetDebug(true);
+pTimeoutDemo.Start();
 ```
 
 ### jQuery Example (fragments)
 
 Note that we can establish `jQuery` event handlers in the `ENTER` event and then `unbind` them in the corresponding `EXIT` event.  
-
-Also note that, because the `jQuery` `click` event is executed under a different `this`, we have to use a closure to remember our state machine's `this`.  We use the common `var that = this;` JavaScript closure technique. 
 
 ```javascript
   .
@@ -233,8 +270,8 @@ Further, we can use state-local variables to cache the `jQuery` selectors, like 
       ENTER: function() {
         $Active.show();
 
-        $('#eStop').click(()     => { this.Transition('Idle');   });
-        $('#eRestart').click(f() => { this.Transition('Active'); });
+        $eStop.click(()     => { this.Transition('Idle');   });
+        $eRestart.click(f() => { this.Transition('Active'); });
       },
 
       EXIT: function() {
@@ -269,6 +306,12 @@ A default state being entered is indicated like this:
 ==> StateName
 ```
 
-## Tests
+## Building
+### `OOSMOS`
+From the top level directory, type `tsc`.
 
-There are both `Node.js` (`.js`) and browser (`.html`) tests in the `tests` directory.
+### Tests
+
+The `tests` directory holds its own `tsconfig.json`.  To build the tests, `cd` to `tests` and enter `tsc`.
+
+There are both `Node.js` (`.ts`) and browser (`.html`) tests in the `tests` directory.

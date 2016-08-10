@@ -162,7 +162,7 @@ export class StateMachine {
     //
     if (To === LCA) {
       let A = LCA.split('.');
-      A.splice(-1, 1); // Remove last element, in place. 
+      A.splice(-1, 1); // Remove last element, in place.
       LCA = A.join('.');
     }
 
@@ -229,7 +229,7 @@ export class StateMachine {
     this.InstrumentStateMachine();
     this.EnterDefaultStates.call(this, this.m_ROOT.COMPOSITE);
   }
-  
+
   public Restart() {
     this.m_State            = {};
     this.m_Timeouts         = {};
@@ -248,7 +248,7 @@ export class StateMachine {
   public IsIn(StateDotPath: string) {
     StateDotPath = 'ROOT.' + StateDotPath;
 
-    if (StateDotPath === this.m_State.DOTPATH) { 
+    if (StateDotPath === this.m_State.DOTPATH) {
       return true;
     }
 
