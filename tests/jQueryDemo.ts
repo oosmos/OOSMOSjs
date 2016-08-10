@@ -25,13 +25,13 @@ class jQueryDemo extends StateMachine {
           $('#Active').show();
 
           var that = this;
-          $('#eStop').click(function()    { that.Transition('Idle');   });
-          $('#eRestart').click(function() { that.Transition('Active'); });
+          $('#eStop').click(function()  { that.Transition('Idle');   });
+          $('#eReset').click(function() { that.Transition('Active'); });
         },
 
         EXIT: function() {
           $('#eStop').unbind('click');
-          $('#eRestart').unbind('click');
+          $('#eReset').unbind('click');
 
           $('#Active').hide();
         },

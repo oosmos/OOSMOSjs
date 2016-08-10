@@ -117,7 +117,7 @@ var StateMachine = (function () {
         //
         if (To === LCA) {
             var A = LCA.split('.');
-            A.splice(-1, 1); // Remove last element, in place. 
+            A.splice(-1, 1); // Remove last element, in place.
             LCA = A.join('.');
         }
         var ArgArray = Array.prototype.splice.call(arguments, 1);
