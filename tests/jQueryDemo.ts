@@ -9,8 +9,7 @@ class jQueryDemo extends StateMachine {
         ENTER: function() {
           $('#Idle').show();
 
-          var that = this;
-          $('#eStart').click(function() { that.Transition('Active'); });
+          $('#eStart').click(() => { this.Transition('Active'); });
         },
 
         EXIT: function() {
@@ -24,9 +23,8 @@ class jQueryDemo extends StateMachine {
         ENTER: function() {
           $('#Active').show();
 
-          var that = this;
-          $('#eStop').click(function()  { that.Transition('Idle');   });
-          $('#eReset').click(function() { that.Transition('Active'); });
+          $('#eStop').click(() => { this.Transition('Idle');   });
+          $('#eReset').click(() => { this.Transition('Active'); });
         },
 
         EXIT: function() {
@@ -45,9 +43,8 @@ class jQueryDemo extends StateMachine {
               ENTER: function() {
                 $A.show();
       
-                var that = this;
-                $('#eA2B').click(function()  { that.Transition('Active.B');    });
-                $('#eA2BB').click(function() { that.Transition('Active.B.BB'); });
+                $('#eA2B').click(() => { this.Transition('Active.B'); });
+                $('#eA2BB').click(() => { this.Transition('Active.B.BB'); });
               },
       
               EXIT: function() {
@@ -62,9 +59,8 @@ class jQueryDemo extends StateMachine {
                   ENTER: function() {
                     $AA.show();
       
-                    var that = this;
-                    $('#eAA2B').click(function()  { that.Transition('Active.B');    });
-                    $('#eAA2BB').click(function() { that.Transition('Active.B.BB'); });
+                    $('#eAA2B').click(() => { this.Transition('Active.B'); });
+                    $('#eAA2BB').click(() => { this.Transition('Active.B.BB'); });
                   },
           
                   EXIT: function() {

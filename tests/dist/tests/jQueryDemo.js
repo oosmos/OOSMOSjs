@@ -12,9 +12,9 @@ var jQueryDemo = (function (_super) {
         _super.call(this, { DEFAULT: 'Idle',
             Idle: {
                 ENTER: function () {
+                    var _this = this;
                     $('#Idle').show();
-                    var that = this;
-                    $('#eStart').click(function () { that.Transition('Active'); });
+                    $('#eStart').click(function () { _this.Transition('Active'); });
                 },
                 EXIT: function () {
                     $('#eStart').unbind('click');
@@ -23,10 +23,10 @@ var jQueryDemo = (function (_super) {
             },
             Active: {
                 ENTER: function () {
+                    var _this = this;
                     $('#Active').show();
-                    var that = this;
-                    $('#eStop').click(function () { that.Transition('Idle'); });
-                    $('#eReset').click(function () { that.Transition('Active'); });
+                    $('#eStop').click(function () { _this.Transition('Idle'); });
+                    $('#eReset').click(function () { _this.Transition('Active'); });
                 },
                 EXIT: function () {
                     $('#eStop').unbind('click');
@@ -39,10 +39,10 @@ var jQueryDemo = (function (_super) {
                         var $AA = $('#AA');
                         return {
                             ENTER: function () {
+                                var _this = this;
                                 $A.show();
-                                var that = this;
-                                $('#eA2B').click(function () { that.Transition('Active.B'); });
-                                $('#eA2BB').click(function () { that.Transition('Active.B.BB'); });
+                                $('#eA2B').click(function () { _this.Transition('Active.B'); });
+                                $('#eA2BB').click(function () { _this.Transition('Active.B.BB'); });
                             },
                             EXIT: function () {
                                 $('#eA2B').unbind('click');
@@ -52,10 +52,10 @@ var jQueryDemo = (function (_super) {
                             COMPOSITE: {
                                 AA: {
                                     ENTER: function () {
+                                        var _this = this;
                                         $AA.show();
-                                        var that = this;
-                                        $('#eAA2B').click(function () { that.Transition('Active.B'); });
-                                        $('#eAA2BB').click(function () { that.Transition('Active.B.BB'); });
+                                        $('#eAA2B').click(function () { _this.Transition('Active.B'); });
+                                        $('#eAA2BB').click(function () { _this.Transition('Active.B.BB'); });
                                     },
                                     EXIT: function () {
                                         $('#eAA2B').unbind('click');
