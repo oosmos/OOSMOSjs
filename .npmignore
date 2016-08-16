@@ -1,4 +1,4 @@
 .vscode
+tests
+tsconfig.json
 tslint.json
-dist
-node_modules

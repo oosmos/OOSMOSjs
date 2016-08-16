@@ -1,6 +1,5 @@
-///<reference path='./typings/jquery/jqueryui.d.ts'/>
-///<reference path='./typings/jquery/jquery.d.ts'/>
-///<reference path='./typings/reference_OOSMOS.d.ts'/>
+import { StateMachine } from '../OOSMOS';
+import * as $ from 'jquery';
 
 class jQueryDemo extends StateMachine {
   constructor() {

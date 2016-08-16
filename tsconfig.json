@@ -14,7 +14,14 @@
     "removeComments" : true,
     "outDir": "./dist/"
   },
+
   "files" : [
-    "OOSMOS.ts"
+    "./typings/jquery/jquery.d.ts",
+    "./OOSMOS.ts",
+    "./tests/jQueryDemo.ts",
+    "./tests/SimpleTimeoutDemo.ts",
+    "./tests/simple_timeout.ts",
+    "./tests/nested_timeout.ts",
+    "./tests/simple_timeout_state_variables.ts"
   ]
 }

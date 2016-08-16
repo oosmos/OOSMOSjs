@@ -1,4 +1,4 @@
-/// <reference path='./typings/reference_OOSMOS.d.ts' />
+import { StateMachine } from '../OOSMOS';
 
 class TimeoutTest extends StateMachine {
   constructor() {
@@ -26,3 +26,6 @@ class TimeoutTest extends StateMachine {
   }
 }
 
+const pTimeoutTest = new TimeoutTest();
+pTimeoutTest.SetDebug(true, 'debugFSM');
+pTimeoutTest.Start();

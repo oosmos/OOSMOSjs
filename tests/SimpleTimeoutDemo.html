@@ -29,8 +29,6 @@
 <meta charset="utf-8">
 <title>OOSMOS.js Finite State Machine Demo</title>
 
-
-
 <style>
 .Debug {
   float:left;
@@ -48,24 +46,14 @@
   margin:0 5px;
 }
 </style>
+
 </head>
 <body>
 
 <div style="clear:both;margin:20px 0"></div>
 <div id="debugFSM" class="Debug"></div>
 
-<script type="text/javascript">
-  var exports = {};  // OOSMOS will assign to exports.
-</script>
-<script src="dist/OOSMOS.js" type="text/javascript"></script>
-
-<script src="dist/tests/SimpleTimeoutDemo.js" type="text/javascript" ></script>
-<script type="text/javascript">
-  const pTimeoutTest = new TimeoutTest();
-  pTimeoutTest.SetDebug(true, 'debugFSM');
-  pTimeoutTest.Start();
-</script>
-
+<script src="../dist/tests/SimpleTimeoutDemoBundle.js" type="text/javascript" ></script>
 
 </body>
 </html>
