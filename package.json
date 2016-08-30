@@ -1,6 +1,6 @@
 {
   "name": "oosmos",
-  "version": "1.1.1",
+  "version": "1.2",
   "description": "A Hierarchical State Machine Class",
   "main": "./js/OOSMOS.js",
   "typings": "./ts/typings/OOSMOS.d.ts",
