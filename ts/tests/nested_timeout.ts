@@ -4,20 +4,20 @@ class TimeoutTest extends StateMachine {
   constructor() {
     super({ DEFAULT: 'Outer',
       Outer: {
-        ENTER: function() {
+        ENTER() {
           this.Print('In state Outer');
           this.SetTimeoutSeconds(4);
         },
-        TIMEOUT: function() {
+        TIMEOUT() {
           this.Transition('OuterTimeout');
         },
         COMPOSITE: {
           Inner: {
-            ENTER: function() {
+            ENTER() {
               this.Print('In state Outer.Inner');
               this.SetTimeoutSeconds(2);
             },
-            TIMEOUT: function() {
+            TIMEOUT() {
               this.Transition('InnerTimeout');
             },
           },
@@ -25,18 +25,18 @@ class TimeoutTest extends StateMachine {
       },
 
       OuterTimeout: {
-        ENTER: function() {
+        ENTER() {
           this.Print('In state OuterTimeout');
           this.Assert(false);
         },
       },
 
       InnerTimeout: {
-        ENTER: function() {
+        ENTER() {
           this.Print('In state InnerTimeout');
           this.SetTimeoutSeconds(1);
         },
-        TIMEOUT: function() {
+        TIMEOUT() {
           this.Transition('Outer');
         },
       },

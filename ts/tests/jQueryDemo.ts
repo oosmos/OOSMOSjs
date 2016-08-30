@@ -5,28 +5,28 @@ class jQueryDemo extends StateMachine {
   constructor() {
     super({ DEFAULT: 'Idle',
       Idle: {
-        ENTER: function() {
+        ENTER() {
           $('#Idle').show();
 
           $('#eStart').click(() => { this.Transition('Active'); });
         },
 
-        EXIT: function() {
+        EXIT() {
           $('#eStart').unbind('click');
 
           $('#Idle').hide();
-        }
+        },
       },
 
       Active: {
-        ENTER: function() {
+        ENTER() {
           $('#Active').show();
 
           $('#eStop').click(() => { this.Transition('Idle');   });
           $('#eReset').click(() => { this.Transition('Active'); });
         },
 
-        EXIT: function() {
+        EXIT() {
           $('#eStop').unbind('click');
           $('#eReset').unbind('click');
 
@@ -34,73 +34,73 @@ class jQueryDemo extends StateMachine {
         },
 
         COMPOSITE: { DEFAULT: 'A',
-          A: function() {
-            var $A = $('#A');
-            var $AA = $('#AA');
+          A() {
+            const $A = $('#A');
+            const $AA = $('#AA');
 
             return {
-              ENTER: function() {
+              ENTER() {
                 $A.show();
-      
+
                 $('#eA2B').click(() => { this.Transition('Active.B'); });
                 $('#eA2BB').click(() => { this.Transition('Active.B.BB'); });
               },
-      
-              EXIT: function() {
+
+              EXIT() {
                 $('#eA2B').unbind('click');
                 $('#eA2BB').unbind('click');
-      
+
                 $A.hide();
               },
 
               COMPOSITE: {
                 AA: {
-                  ENTER: function() {
+                  ENTER() {
                     $AA.show();
-      
+
                     $('#eAA2B').click(() => { this.Transition('Active.B'); });
                     $('#eAA2BB').click(() => { this.Transition('Active.B.BB'); });
                   },
-          
-                  EXIT: function() {
+
+                  EXIT() {
                     $('#eAA2B').unbind('click');
                     $('#eAA2BB').unbind('click');
-      
+
                     $AA.hide();
-                  }
-                }
-              }
+                  },
+                },
+              },
             };
           },
 
-          B: function() {
-            var $B  = $('#B');
-            var $BB = $('#BB');
+          B() {
+            const $B  = $('#B');
+            const $BB = $('#BB');
 
             return {
-              ENTER: function() {
+              ENTER() {
                 $B.show();
               },
-      
-              EXIT: function() {
+
+              EXIT() {
                 $B.hide();
               },
-      
+
               COMPOSITE: {
                 BB: {
-                  ENTER: function() {
+                  ENTER() {
                     $BB.show();
                   },
-      
-                  EXIT: function() {
+
+                  EXIT() {
                     $BB.hide();
-                  }
-                }
-              }
+                  },
+                },
+              },
             };
-          }
-        }
-      }
+          },
+        },
+      },
     });
   }
 }

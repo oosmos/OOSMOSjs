@@ -135,6 +135,7 @@ var StateMachine = (function () {
     StateMachine.prototype.Start = function () {
         this.InstrumentStateMachine();
         this.EnterDefaultStates.call(this, this.m_ROOT.COMPOSITE);
+        return this;
     };
     StateMachine.prototype.Restart = function () {
         this.m_State = {};

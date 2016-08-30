@@ -1,4 +1,4 @@
-`OOSMOS.ts` islicensed under the MIT License.
+`OOSMOS.ts` is licensed under the MIT License.
 
 > **The MIT License**
 >

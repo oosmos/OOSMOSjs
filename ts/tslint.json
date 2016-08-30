@@ -9,6 +9,10 @@
       140
     ],
 
+     "no-reference": false,
+
+     "object-literal-sort-keys": false,
+
     "no-namespace" : false,
 
     "member-ordering": [ true,

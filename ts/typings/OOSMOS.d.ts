@@ -29,7 +29,7 @@ export declare class StateMachine {
     private EnterDefaultStates(Composite);
     private CalculateLCA(StringA, StringB);
     Transition(To: string, ...Args: any[]): void;
-    Start(): void;
+    Start(): StateMachine;
     Restart(): void;
     IsIn(StateDotPath: string): boolean;
     Event(EventString: string, ...Args: any[]): void;

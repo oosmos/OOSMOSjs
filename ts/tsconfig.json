@@ -9,10 +9,8 @@
     "preserveConstEnums": true,
     "pretty": true,
     "noFallthroughCasesInSwitch":true,
-    "sourceMap": false,
-    "declaration": true,
     "removeComments" : true,
-    "outDir": "./dist/"
+    "outDir": "../js/"
   },
 
   "files" : [

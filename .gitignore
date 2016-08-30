@@ -1,4 +1,2 @@
 .vscode
-tslint.json
-dist
 node_modules

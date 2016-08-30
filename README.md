@@ -8,7 +8,7 @@ Live Demo: [OOSMOS.js](https://oosmos.com/OOSMOSjs)
 
 - Very readable encapsulated state machine structure.
 - Simple. Less than 300 lines of code of post-transpiled JavaScript.
-- Runs in a browser or `Node.js`.
+- Runs in a browser (uses `webpack`) or `Node.js`.
 - Supports arbitrarily deep hierarchical state machines.
 - Supports state local variables. (Ideal for caching `jQuery` elements.)
 - Simple API: Only 5 principal APIs.
@@ -106,7 +106,8 @@ class TimeoutTest extends StateMachine {
   }     
 });
 
-StateMachine.Start();
+const pTimeoutTest = new TimeoutTest();
+pTimeoutTest.Start();
 ```
 
 ### State Machine Structure Rules
@@ -201,14 +202,14 @@ class TimeoutDemo extends StateMachine {
   constructor() {
     super({ DEFAULT: 'A',
       A: {
-        ENTER: function() {
+        ENTER: () => {
           this.SetTimeoutSeconds(4);
         },
         TIMEOUT: function() {
           this.Transition('B');
         },
       },
-      B: function() {
+      B: () => {
         var Timeouts = 0;
 
         return {
@@ -238,14 +239,14 @@ Note that we can establish `jQuery` event handlers in the `ENTER` event and then
   .
   .
   Active: {
-    ENTER: function() {
+    ENTER: () => {
       $('#Active').show();
 
       $('#eStop').click(()     => { this.Transition('Idle');   });
       $('#eRestart').click(f() => { this.Transition('Active'); });
     },
 
-    EXIT: function() {
+    EXIT: () => {
       $('#eStop').unbind('click');
       $('#eRestart').unbind('click');
 
@@ -267,14 +268,14 @@ Further, we can use state-local variables to cache the `jQuery` selectors, like 
     var $eRestart = $('#eRestart');
 
     return {
-      ENTER: function() {
+      ENTER: () => {
         $Active.show();
 
         $eStop.click(()     => { this.Transition('Idle');   });
         $eRestart.click(f() => { this.Transition('Active'); });
       },
 
-      EXIT: function() {
+      EXIT: () => {
         $eStop.unbind('click');
         $eRestart.unbind('click');
 
@@ -307,11 +308,6 @@ A default state being entered is indicated like this:
 ```
 
 ## Building
-### `OOSMOS`
-From the top level directory, type `tsc`.
+From the top level directory, type `npm start`.  Note: It depends on `Python`.
 
-### Tests
 
-The `tests` directory holds its own `tsconfig.json`.  To build the tests, `cd` to `tests` and enter `tsc`.
-
-There are both `Node.js` (`.ts`) and browser (`.html`) tests in the `tests` directory.

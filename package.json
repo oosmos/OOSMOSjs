@@ -1,13 +1,15 @@
 {
   "name": "oosmos",
-  "version": "1.0.0",
-  "description": "Hierarchical State Machine Class",
-  "main": "./dist/OOSMOS.js",
-  "typings": "./dist/OOSMOS.d.ts",
+  "version": "1.1.1",
+  "description": "A Hierarchical State Machine Class",
+  "main": "./js/OOSMOS.js",
+  "typings": "./ts/typings/OOSMOS.d.ts",
   "directories": {},
+
   "scripts": {
-    "build": "tsc && webpack"
+    "start": "cd ts && python build.py"
   },
+
   "repository": {
     "type": "git",
     "url": "https://github.com/oosmos/OOSMOSjs"
@@ -20,9 +22,10 @@
   ],
   "author": "Mark J Glenn",
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "jquery": "^3.1.0"
+  },
   "devDependencies": {
-    "jquery": "^3.1.0",
     "webpack": "^1.13.1"
   }
 }

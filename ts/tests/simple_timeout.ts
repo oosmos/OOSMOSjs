@@ -4,21 +4,21 @@ class TimeoutTest extends StateMachine {
   constructor() {
     super({ DEFAULT: 'A',
       A: {
-        ENTER: function() {
+        ENTER() {
           this.Print("In state A");
           this.SetTimeoutSeconds(4);
         },
-        TIMEOUT: function() {
+        TIMEOUT() {
           this.Transition('B');
         },
       },
 
       B: {
-        ENTER: function() {
+        ENTER() {
           this.Print("In state B");
           this.SetTimeoutSeconds(1);
         },
-        TIMEOUT: function() {
+        TIMEOUT() {
           this.Transition('A');
         },
       },
@@ -27,5 +27,5 @@ class TimeoutTest extends StateMachine {
 }
 
 const pTimeoutTest = new TimeoutTest();
-pTimeoutTest.SetDebug(true, 'debugFSM');
+pTimeoutTest.SetDebug(true);
 pTimeoutTest.Start();
