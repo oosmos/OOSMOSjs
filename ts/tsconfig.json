@@ -14,7 +14,6 @@
   },
 
   "files" : [
-    "./typings/jquery/jquery.d.ts",
     "./OOSMOS.ts",
     "./tests/jQueryDemo.ts",
     "./tests/SimpleTimeoutDemo.ts",
