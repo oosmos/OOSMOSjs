@@ -2,7 +2,7 @@
 
 OOSMOS for JavaScript is an open source, easy-to-use hierarchical state machine class.  The principle source code is written in the single TypeScript source file `OOSMOS.ts`.
 
-Live Demo: [OOSMOS.js](https://oosmos.com/OOSMOSjs)
+Live Demo: [OOSMOS.js](https://www.oosmos.com/OOSMOSjs)
 
 ### Features
 
@@ -15,14 +15,14 @@ Live Demo: [OOSMOS.js](https://oosmos.com/OOSMOSjs)
 - Can run multiple state machines concurrently.
 - Events can pass arguments into the state entry function via transitions.
 
-_Note: OOSMOS stands for **O**bject **O**riented **S**tate **M**achine **O**perating **S**ystem.  OOSMOS is a small footprint C/C++ state machine operating system for the industrial IOT space.  (See [www.oosmos.com](http://www.oosmos.com).) This JavaScript implementation borrows from the Object-Oriented and 
+_Note: OOSMOS stands for **O**bject **O**riented **S**tate **M**achine **O**perating **S**ystem.  OOSMOS is a small footprint C/C++ state machine operating system for the industrial IOT space.  (See [www.oosmos.com](https://www.oosmos.com).) This JavaScript implementation borrows from the Object-Oriented and 
 State Machine elements of OOSMOS but the Operating System elements are supported by the JavaScript runtime._
 
 ### Example
 
 We'll use `OOSMOS.ts` to implement a simple state machine that toggles between states `A` and `B` with timeouts as represented in this state chart.
 
-![](http://www.oosmos.com/github/README.md/simple_timeout.svg)
+![](https://www.oosmos.com/github/README.md/simple_timeout.svg)
 
 _Note that we use UMLet to draw state machines.  ([www.umlet.com](http://www.umlet.com/)).  State machines are easy to draw, can export as `.SVG` files, and the tool is open source._
 
